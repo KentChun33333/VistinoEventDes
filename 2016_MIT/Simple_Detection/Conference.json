@@ -1,0 +1,40 @@
+{
+
+"AAAI    ":  "National Conference of the American Association for Artificial Intelligence	",
+"AAMAS   ":  "International Conference on Autonomous Agents and Multiagent Systems	",
+"CCS     ":  "ACM Conference on Computer and Communications Security	",
+"CHI     ":  "International Conference on Human Factors in Computing Systems	",
+"COLT    ":  "Annual Conference on Computational Learning Theory	",
+"CSCL    ":  "Computer Supported Collaborative Learning	",
+"I3DG    ":  "ACM-SIGRAPH Interactive 3D Graphics	",
+"ICAPS   ":  "International Conference on Automated Planning and Scheduling	",
+"ICCV    ":  "IEEE International Conference on Computer Vision	",
+"ICDE    ":  "IEEE International Conference on Data Engineering	",
+"ICDM    ":  "IEEE International Conference on Data Mining	",
+"ICML    ":  "International Conference on Machine Learning	",
+"ICSE    ":  "International Conference on Software Engineering	",
+"IJCAI   ":  "International Joint Conference on Artificial Intelligence	",
+"IJCAR   ":  "International Joint Conference on Automated Reasoning	",
+"KR      ":  "International Conference on Principles of KR & Reasoning	",
+"LICS    ":  "IEEE Symposium on Logic in Computer Science	",
+"MOBICOM ":  "ACM International Conferencem on Mobile Computing and Networking	",
+"NIPS    ":  "Advances in Neural Information Processing Systems	",
+"RTSS    ":  "Real Time Systems Symp	",
+"SENSYS  ":  "ACM Conference on Embedded Networked Sensor Systems	",
+"UAI     ":  "Conference in Uncertainty in Artifical Intelligence	"
+
+}
+//Acronym,Standard Name,Rank
+
+
+//import commentjson as json
+//class Conf:
+//    def __init__(self, confPath):
+//        # load and store the configuration and update the object's dictionary
+//        conf = json.loads(open(confPath).read())
+//        self.__dict__.update(conf)
+//    def __getitem__(self, k):
+//        # return the value associated with the supplied key
+//        return self.__dict__.get(k, None)
+
+

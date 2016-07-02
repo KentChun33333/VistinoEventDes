@@ -1,0 +1,60 @@
+{
+    #######
+    # FOLDER PATH 
+    #######
+    "pos_raw_ph" : "/Users/kentchiu/MIT_Vedio/3D_DataSet/L_2_fingers_pos/L_2_finger",
+    "pos_anno_ph":"",
+    "neg_raw_ph" : "/Users/kentchiu/MIT_Vedio/3D_DataSet/BG/",
+    "hard_neg_ph" : "",
+    "neg_feat_ph" : "/Users/kentchiu/feature_hub/neg/conf_depth_L2_fingr_1", # + conf-file-name/
+    "pos_feat_ph" : "/Users/kentchiu/feature_hub/pos/conf_depth_L2_fingr_1", # + conf-file-name/
+    "model_ph" : "model_hub/svm/conf_depth_L2_fingr_1.model", # +conf-file.model/
+
+    #######
+    # DESCRIPTOR
+    ######
+    "orientations": 5,
+    "pixels_per_cell": [4, 4],
+    "cells_per_block": [4, 4],
+    "visualize": false,
+    "normalize": true,
+    
+    ######
+    # Resolution 
+    ######
+    "raw_resolution":[],
+    "train_resolution":[160,120], # ~detect_resolution
+    "train_size":[30,30], # ~pos_obj size in train_resolution
+    "sliding_size":[30,30], # must equal above, Detection slidinng window size
+
+    #######
+    # FEATURE EXTRACTION
+    #######
+    "percent_gt_images": 0.5, #how many persentage for traning from ground truth img
+    "offset": 5, # ?
+    "use_flip": true, #?
+    "num_distraction_images": 500, # ?
+    "num_distractions_per_image": 5, # ?
+
+    #######
+    # OBJECT DETECTOR, Feature No more than 1000
+    #######
+    "overlap_thresh": 0.3,
+    "pyramid_scale": 1.3,
+    "min_probability": 0.7,
+    "step_size": 10,### n_feat.py,
+
+    #######
+    # LINEAR SVM
+    #######
+    "classifier_path": "output/cars/model.cpickle",
+    "C": 0.01,
+
+    #######
+    # HARD NEGATIVE MINING
+    #######
+    "hn_num_distraction_images": 50,
+    "hn_window_step": 4,
+    "hn_pyramid_scale": 1.5,
+    "hn_min_probability": 0.51
+}
