@@ -1,8 +1,0 @@
-Env. conf 
--[Dependence] 
-    ~/opencv
-    CUDA 7.5 
-    CuDnn { ~/cuda/bin, ~/cuda/lib  }
-    Theano
-        -Put theano_gpu_conf.theanorc.txt in ~/Anacona2/
-        

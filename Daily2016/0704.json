@@ -1,0 +1,32 @@
+Theano -gpu
+- CUDA 7.5(Program/Nvidai)
+- Visual 2013 C++ Compiler 
+- Visaul C++ for python 
+- Cudnn (~/cuda)
+- conda install boost 
+- import theano; theano.test()
+- pip install pipwin & pipwin install pycuda ===> Fail
+- os.environ['THEANO_FLAGS'] = 'floatX=float32,device=gpu,nvcc.fastmath=True, nvcc.flags=-LC:\Users\kentc\Anaconda2\libs'
+- lib.cnmem = 1 ===> Call Fail 
+- device = gpu ====> Not gpu0
+- Set the environ varialbe # this way better .theanorc.txt
+sudo pip install nose-parameterized
+
+
+There should be a way to do it by setting only the Path environment variable 
+but I could never get that to work. 
+The only thing that worked for me was to manually 
+copy the CuDNN files into the appropriate folders in your CUDA installation. 
+For example, if your CUDA installation is in C:\CUDA\v7.0 and you extracted CuDNN to C:\CuDNN you would copy as follows:
+•The contents of C:\CuDNN\lib\x64\ would be copied to C:\CUDA\v7.0\lib\x64\ 
+•The contents of C:\CuDNN\include\ would be copied to C:\CUDA\v7.0\include\
+•The contents of C:\CuDNN\bin\ would be copied to C:\CUDA\v7.0\bin\
+
+After that it should work.
+
+#######################################################################
+
+#######################################################################
+
+
+LSTM Networks for Sentiment Analysis

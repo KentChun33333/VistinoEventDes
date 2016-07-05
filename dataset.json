@@ -17,7 +17,8 @@
         25,000 for testing.
          There is additional unlabeled data for use as well. 
          Raw text and already processed bag of words formats are provided.",
-        "LocalURL":"MIT_Video"
+        "LocalURL":"MIT_Video",
+        "LocalURL_ASUS":"D:aclImdb"
 
     }
 }
