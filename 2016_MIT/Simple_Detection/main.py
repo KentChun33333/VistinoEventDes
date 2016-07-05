@@ -147,12 +147,13 @@ while True:
 			motionSeq      = sequence_container(motionSeq,10)
 			motionLikehood = statics_mode(motionSeq)[0]
 			motionLikehoodSeq.append(motionLikehood)
-
+			
 			motionStr      = Dictionary.check(motionLikehood)
 			print motionStr
 			# %.2f = float with 2 dicimal 
 			cv2.putText(img_red_check, "The Hand is : %s" % (motionStr), (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 3)
-			#if 
+			if len(motionLikehoodSeq)>5:
+
 		# update the whole_value
 		values.append([numFrames,point])
 		

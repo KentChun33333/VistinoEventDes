@@ -1,0 +1,23 @@
+// Meta-Data for the open data set used or tested in this project 
+
+{
+    "MNIST": {
+        "URL":"",
+        "Des":""
+    },
+    "CIFAR-10": {
+        "URL":"",
+        "Des":""
+    },
+    "IMDB": {
+        "URL":"http://ai.stanford.edu/~amaas/data/sentiment/",
+        "Des":"binary sentiment classification containing substantially 
+        more data than previous benchmark datasets.  
+        25,000 highly polar movie reviews for training, 
+        25,000 for testing.
+         There is additional unlabeled data for use as well. 
+         Raw text and already processed bag of words formats are provided.",
+        "LocalURL":"MIT_Video"
+
+    }
+}
