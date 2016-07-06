@@ -472,6 +472,7 @@ def train_lstm(
 ):
 
     # Model options
+    # [*] Use dict to build the learning Arichtecture 
     model_options = locals().copy()
     print("model options", model_options)
 
@@ -489,18 +490,63 @@ def train_lstm(
         idx = idx[:test_size]
         test = ([test[0][n] for n in idx], [test[1][n] for n in idx])
 
-    ydim = numpy.max(train[1]) + 1
+    ydim = numpy.max(train[1]) + 1 # since start from 0
 
     model_options['ydim'] = ydim
 
     print('Building model')
     # This create the initial parameters as numpy ndarrays.
     # Dict name (string) -> numpy ndarray
+    # [*] init of network 
     params = init_params(model_options)
-
+    print ('params')
+    print (params)
     if reload_model:
+        # [*] Update the network parameter with trained model
+        # [*] this fucking code is evil.... 
+        # [*] params = load_params 
         load_params('lstm_model.npz', params)
+        ######################################################################
+        # This create Theano Shared Variable from the parameters.  
+        # Dict name (string) -> Theano Tensor Shared Variable
+        # params and tparams have different copy of the weights.
+        tparams = init_tparams(params)
+        # use_noise is for dropout
+        (use_noise, x, mask,
+         y, f_pred_prob, f_pred, cost) = build_model(tparams, model_options)
 
+        print ('tparams')
+        print (tparams)
+        print ("use_noise" )
+        print (use_noise)     
+        print ('x')           # Just container 
+        print (x)             # Just container 
+        print ('mask')        # Just container 
+        print (mask)          # Just container 
+        print ('y')           # Just container 
+        print (y)             # Just container 
+        print ('f_pred_prob') # Just container 
+        print (f_pred_prob)   # Just container 
+        print ('f_pred')      # Just container 
+        print (f_pred)        # Just container 
+        print ('cost')        # Just container 
+        print (cost)          # Just container 
+
+
+        if decay_c > 0.:
+            decay_c = theano.shared(numpy_floatX(decay_c), name='decay_c')
+            weight_decay = 0.
+            weight_decay += (tparams['U'] ** 2).sum()
+            weight_decay *= decay_c
+            cost += weight_decay    
+
+        f_cost = theano.function([x, mask, y], cost, name='f_cost')    
+
+        grads = tensor.grad(cost, wrt=list(tparams.values()))
+        f_grad = theano.function([x, mask, y], grads, name='f_grad')    
+
+        return 
+        #######################################################################
     # This create Theano Shared Variable from the parameters.
     # Dict name (string) -> Theano Tensor Shared Variable
     # params and tparams have different copy of the weights.
@@ -509,6 +555,26 @@ def train_lstm(
     # use_noise is for dropout
     (use_noise, x, mask,
      y, f_pred_prob, f_pred, cost) = build_model(tparams, model_options)
+
+
+
+    print ('tparams')
+    print (tparams)
+    print ("use_noise" )
+    print (use_noise)
+    print ('x')
+    print (x)
+    print ('mask')
+    print (mask)
+    print ('y')
+    print (y)
+    print ('f_pred_prob')
+    print (f_pred_prob)
+    print ('f_pred')
+    print (f_pred)
+    print ('cost')
+    print (cost)
+
 
     if decay_c > 0.:
         decay_c = theano.shared(numpy_floatX(decay_c), name='decay_c')

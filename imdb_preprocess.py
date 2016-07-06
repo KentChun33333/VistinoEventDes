@@ -10,7 +10,7 @@ https://github.com/moses-smt/mosesdecoder/raw/master/scripts/tokenizer/tokenizer
 """
 
 dataset_path='/Tmp/bastienf/aclImdb/'
-dataset_path='D:\aclImdb'
+dataset_path='D:/aclImdb'
 import numpy
 import cPickle as pkl
 
