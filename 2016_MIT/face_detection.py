@@ -8,15 +8,15 @@ import time
 #    '/Users/kentchiu/opencv/data/haarcascades/haarcascade_eye.xml')
 
 face_cascade = cv2.CascadeClassifier(
-    '/Users/kentchiu/Night_Graden/Project/2016_MIT/frontalFace10/haarcascade_frontalface_alt.xml')
+    '/Users/kentchiu/VistinoEventDes/2016_MIT/frontalFace10/haarcascade_frontalface_alt.xml')
 
 eye_cascade = cv2.CascadeClassifier(
-    '/Users/kentchiu/Night_Graden/Project/2016_MIT/frontalEyes35x16/frontalEyes35x16.xml')
+    '/Users/kentchiu/VistinoEventDes/2016_MIT/frontalEyes35x16/frontalEyes35x16.xml')
 
 nose_cascade = cv2.CascadeClassifier(
-    '/Users/kentchiu/Night_Graden/Project/2016_MIT/xml/Nariz.xml')
+    '/Users/kentchiu/VistinoEventDes/2016_MIT/xml/Nariz.xml')
 month_cascade = cv2.CascadeClassifier(
-    '/Users/kentchiu/Night_Graden/Project/2016_MIT/xml/Mouth.xml')
+    '/Users/kentchiu/VistinoEventDes/2016_MIT/xml/Mouth.xml')
 
 # Detect faces in the image
 cap = cv2.VideoCapture(0)
@@ -26,8 +26,7 @@ while(1):
     time.sleep(0.1)
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     #gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-    faces = face_cascade.detectMultiScale(
-        gray,
+    faces = face_cascade.detectMultiScale(gray,
         scaleFactor=1.2,
         minNeighbors=15, #35 ==> 1
         )

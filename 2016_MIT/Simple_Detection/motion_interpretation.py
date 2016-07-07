@@ -32,7 +32,7 @@ def interpreter(coord1, coord2):
     distance_of_vect = sqrt((x1-x2)**2+(y1-y2)**2)
     if x1 == x2 and y1 == y2:
         return STATIC  # two coordinates are the same.
-    elif  distance_of_vect < 10: 
+    elif  distance_of_vect < 5: 
     # [*] the magnitude is too small 
     	return STATIC
     elif x1 == x2 and y1 > y2:
