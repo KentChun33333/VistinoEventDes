@@ -9,7 +9,8 @@ import cv2
 import motion_interpretation
 from scipy.stats.mstats import mode as statics_mode
 from motion_dictionary import Motion_Dictionary
-
+from path_dictionary import Path_DTW_Dictionary
+import fastdtw
 import time
 
 def get_args():
@@ -106,7 +107,9 @@ motionALL = []
 motionSeq = []
 motionLikehoodSeq = []
 Dictionary = Motion_Dictionary()
-
+PathDictionary = Path_DTW_Dictionary()
+#init 
+PathRegStr = "None" 
 # keep looping
 while True:
 	# grab the current frame
@@ -149,18 +152,21 @@ while True:
 			motionLikehoodSeq.append(motionLikehood)
 			
 			motionStr      = Dictionary.check(motionLikehood)
-			PathRegStr = "None"
+
 			print motionStr
 			# %.2f = float with 2 dicimal 
 			cv2.putText(img_red_check, "The Hand is : %s" % (motionStr), (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 3)
-			if len(motionLikehoodSeq)>5:
+			if len(motionLikehoodSeq)>10:
 				# put it in small LSTM or RNN for NPL
-				if motionLikehoodSeq[-10:]:
-					PathRegStr = "None"
-
+				# put it into DTW search/match
+				PathRegStr_tmp = PathDictionary.search(motionLikehoodSeq[-10:])
+				if PathRegStr_tmp == 'None':
+					pass
+				else:
+					PathRegStr = PathRegStr_tmp
 				pass # do some 3rd Recognition
 
-			cv2.putText(img_red_check, "Last Path-Recog. As : %s" % (PathRegStr), (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 3)
+			cv2.putText(img_red_check, "Last Path-Recog. : %s" % (PathRegStr), (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 3)
 		# update the whole_value
 		values.append([numFrames,point])
 		

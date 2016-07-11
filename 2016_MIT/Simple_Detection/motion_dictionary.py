@@ -1,4 +1,12 @@
-
+################################ 
+# [*] Motion Interpretation    #
+################################
+#   up-left    up   up-right   #
+#          7   8   9           #
+#     left 4   5   6 right     #
+#          1   2   3           #
+# down-left   down  down-right #
+################################ 
 
 
 class Motion_Dictionary():

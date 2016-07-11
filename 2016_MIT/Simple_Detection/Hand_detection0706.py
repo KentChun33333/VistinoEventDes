@@ -32,8 +32,7 @@ def FindDistance(A,B):
  return np.sqrt(np.power((A[0][0]-B[0][0]),2) + np.power((A[0][1]-B[0][1]),2)) 
  
 face_cascade = cv2.CascadeClassifier(
-    '/Users/kentchiu/VistinoEventDes/2016_MIT/frontalFace10/haarcascade_frontalface_alt.xml')
-
+    'C:\\Users/kentc/ocuments/GitHub/VistinoEventDes/2016_MIT/frontalFace10/haarcascade_frontalface_alt.xml')
 
 # Creating a window for HSV track bars
 cv2.namedWindow('HSV_TrackBar')
@@ -61,14 +60,14 @@ while(1):
     # [*]rmface
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     #gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-    faces = face_cascade.detectMultiScale(gray,
-        scaleFactor=1.2,
-        minNeighbors=15, #35 ==> 1
-        )
-    for (x,y,w,h) in faces:
-        rectangle = np.zeros((w, h), dtype = "uint8")
-        cv2.rectangle(frame, (x, y), (x+w, y+h), 255, -1)
-    
+#    faces = face_cascade.detectMultiScale(gray,
+#        scaleFactor=1.2,
+#        minNeighbors=15, #35 ==> 1
+#        )
+#    for (x,y,wid,height) in faces:
+#        rectangle = np.zeros((wid, height), dtype = "uint8")
+#        cv2.rectangle(frame, (x, y), (x+wid, y+height), 255, -1)
+#    
     #Blur the image
     blur = cv2.blur(frame,(3,3))
  	
