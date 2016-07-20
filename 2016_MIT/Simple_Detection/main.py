@@ -166,13 +166,13 @@ while True:
 					PathRegStr = PathRegStr_tmp
 				pass # do some 3rd Recognition
 
-			cv2.putText(img_red_check, "Last Path-Recog. : %s" % (PathRegStr), (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 3)
 		# update the whole_value
 		values.append([numFrames,point])
 		
 		# [*] show the frame to our screen
 	##cv2.imshow("Frame", clone)
 	##cv2.imshow("red_finder", img_red)
+	cv2.putText(img_red_check, "Last Path-Recog. : %s" % (PathRegStr), (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 3)
 	cv2.imshow("Cou", img_red_check)
 	##cv2.imshow("CheckHSV", img_check)
 
