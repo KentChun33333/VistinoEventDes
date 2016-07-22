@@ -61,8 +61,9 @@ class Path_DTW_Dictionary():
 			distance, path = fastdtw(new_value, pathList, dist=euclidean)
 			memo.append(pathStr)
 			memo_distance.append(distance)
-		print ('[*] Min_DTW_Distance : %s'%(str(min(memo_distance))) )
-		if min(memo_distance) < 40:
+		print ('[*] DTW_Distance : ' )
+		print (str(zip(memo, memo_distance)))
+		if min(memo_distance) < 10:
 			idx = memo_distance.index(min(memo_distance))
 			return memo[idx]
 		else:
