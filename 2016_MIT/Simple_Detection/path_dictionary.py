@@ -8,9 +8,9 @@ from fastdtw import fastdtw
 # [*] Path Interpretation        #
 ##################################
 #   up-left     up    up-right   #
-#          7:14    8    9:15           #
+#          7:14    8    9:15     #
 #     left 4    5    6:0 right   #
-#          1:11   2:10  3:13        #
+#          1:11   2:10  3:13     #
 # down-left    down   down-right #
 ################################## 
 
@@ -30,7 +30,24 @@ class Path_DTW_Dictionary():
 		#self.pathDictionary['Slow Moving Up-Right'    ]  = [9,9,9,9,9,9,9,9]
 
 		self.pathDictionary['Clockwise Circle'        ]  = [8,15,6,13,10,11,4,14]
+		self.pathDictionary['Clockwise Circle.'       ]  = [15,6,13,10,11,4,14,8]
+		self.pathDictionary['Clockwise Circle..'      ]  = [6,13,10,11,4,14,8,15]
+		self.pathDictionary['Clockwise Circle...'     ]  = [13,10,11,4,14,8,15,6]
+		self.pathDictionary['Clockwise Circle....'    ]  = [10,11,4,14,8,15,6,13]
+		self.pathDictionary['Clockwise Circle....'    ]  = [11,4,14,8,15,6,13,10]
+		self.pathDictionary['Clockwise Circle.....'   ]  = [4,14,8,15,6,13,10,11]
+		self.pathDictionary['Clockwise Circle......'  ]  = [14,8,15,6,13,10,11,4]
+
 		self.pathDictionary['Conter Clockwise Circle' ]  = [14,4,11,10,13,6,15,8]
+		self.pathDictionary['Conter Clockwise Circle.' ]  = [4,11,10,13,6,15,8,14]
+		self.pathDictionary['Conter Clockwise Circle..' ]  = [11,10,13,6,15,8,14,4]
+		self.pathDictionary['Conter Clockwise Circle...' ]  = [10,13,6,15,8,14,4,11]
+		self.pathDictionary['Conter Clockwise Circle....' ]  = [13,6,15,8,14,4,11,10]
+		self.pathDictionary['Conter Clockwise Circle.....' ]  = [6,15,8,14,4,11,10,13]
+		self.pathDictionary['Conter Clockwise Circle......' ]  = [15,8,14,4,11,10,13,6]
+		self.pathDictionary['Conter Clockwise Circle.......' ]  = [8,14,4,11,10,13,6,15]
+
+
 		self.pathDictionary['Horizontal Wave'         ]  = [4,0,4,0]
 		self.pathDictionary['Vertical Wave'           ]  = [10,8,10,8]
 

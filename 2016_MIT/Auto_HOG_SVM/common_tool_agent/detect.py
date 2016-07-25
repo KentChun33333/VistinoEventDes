@@ -28,6 +28,7 @@ class ObjectDetector:
 					# extract HOG features from the current window and classifiy whether or
 					# not this window contains an object we are interested in
 					features = self.desc.describe(window)
+					features.reshape(-1, 1) # due to the depreciation
 					prob = self.model.predict_proba(features)[0][1]
 
 					# check to see if the classifier has found an object with sufficient
