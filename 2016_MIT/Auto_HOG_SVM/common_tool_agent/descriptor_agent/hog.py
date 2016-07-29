@@ -18,7 +18,7 @@ class HOG:
 			cells_per_block=self.cellsPerBlock, normalise=self.normalize)
 		hist[hist < 0] = 0
 		# return the histogram
-		return hist
+		return hist.reshape(1,-1)
 
 class LocalBinaryPatterns:
     def __init__(self, numPoints, radius):

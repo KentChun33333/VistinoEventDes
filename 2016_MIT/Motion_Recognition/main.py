@@ -159,7 +159,8 @@ while True:
 			if len(motionLikehoodSeq)>10:
 				# put it in small LSTM or RNN for NPL
 				# put it into DTW search/match
-				PathRegStr_tmp = PathDictionary.search(motionLikehoodSeq[-10:])
+				motionLikehoodSeq = sequence_container(motionLikehoodSeq,10)
+				PathRegStr_tmp = PathDictionary.search(motionLikehoodSeq[-8:])
 				if PathRegStr_tmp == 'None':
 					pass
 				else:

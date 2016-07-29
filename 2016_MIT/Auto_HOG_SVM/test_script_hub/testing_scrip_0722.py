@@ -2,7 +2,7 @@
 
 
 def main_testing_conf():
-    '''cd /Users/kentchiu/Night_Graden/Project/2016_MIT/Auto_HOG_SVM/'''
+    '''cd /Users/kentchiu/VistinoEventDes/2016_MIT/Auto_HOG_SVM/'''
     from common_tool_agent.common_func import non_max_suppression
     from common_tool_agent.conf import Conf
     from common_tool_agent.descriptor_agent.hog import HOG
@@ -51,6 +51,7 @@ def cascade_test_15_c3(img):
         else:
         # draw rectangle at the specific location
             cv2.rectangle(ref,(x+50,y+50),(x+50+w,y+50+h),(255,0,0),2) 
+            cv2.putText(ref, "Hand", (x+50,y+50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 0, 0), 4)
             hand.append([(x+50+x+50+w)/2,(y+50+h+y+50)/2])
     #show(ref)
             print ((x+50,y+50),(x+50+w,y+50+h))
@@ -217,6 +218,7 @@ video_saving('~/MIT_Vedio/test_0601_1.mp4',20.0,result_img)
 #
 
 def configuration_():
+    vid = imageio.get_reader('/Users/kentchiu/MIT_Vedio/2016-01-21/10.167.10.158_01_20160121082638418_2.mp4')
     conf = Conf('conf_hub/conf_pureScrewDriver.json')
     clf = joblib.load(conf['model_ph'])
     # initialize feature container
@@ -226,6 +228,7 @@ def configuration_():
     od = ObjectDetector(clf, hog)
 
 def configuration_2():
+    vid = imageio.get_reader('/Users/kentchiu/MIT_Vedio/2016-01-21/10.167.10.158_01_20160121082638418_2.mp4')
     conf = Conf('conf_hub/conf_pureScrewDriver_2.json')
     clf = joblib.load(conf['model_ph'])
     # initialize feature container
@@ -246,6 +249,8 @@ def test_with_pro(rawImg,pro):
     # if positive size would change, we have to use 1.5 or 2 ...etc 
     pick = non_max_suppression(np.array(boxes), probs, conf["overlap_thresh"])
     orig = img.copy()
+
+    # Resize Back, I am GOD !!!!! 
     y_sizeFactor = ref.shape[0]/float(img.shape[0])
     x_sizeFactor = ref.shape[1]/float(img.shape[1])
 
@@ -257,7 +262,9 @@ def test_with_pro(rawImg,pro):
         startY = int(startY* y_sizeFactor)
         endY   = int(endY  * y_sizeFactor)        
         cv2.rectangle(ref, (startX, startY), (endX, endY), (0, 255, 0), 2)
-        print (startX, startY), (endX, endY)
+        cv2.putText(ref, "SkewDriver", (startX, startY), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 4)
+        #print (startX, startY), (endX, endY)
+    #show(ref)
     return ref, pick
 
 def main_script(newImg,stateID,seqLen):
