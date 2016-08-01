@@ -1,5 +1,4 @@
 # USAGE
-# python recognize.py --bounding-box "10,350,225,590"
 
 # import the necessary packages
 import numpy as np
@@ -8,8 +7,9 @@ import imutils
 import cv2
 import motion_interpretation
 from scipy.stats.mstats import mode as statics_mode
-from motion_dictionary import Motion_Dictionary
-from path_dictionary import Path_DTW_Dictionary
+from motion_dictionary  import Motion_Dictionary
+from path_dictionary    import Path_DTW_Dictionary
+from gesture_dictionary import Gestrue_DTW_Dictionary
 import fastdtw
 import time
 
@@ -42,6 +42,11 @@ def sequence_container(inPut, seqLen):
         return inPut
     else :
         return inPut
+
+def sequence_container_v2(inPut, seqLen):
+    if len(inPut)<seqLen:
+        return inPut
+    return inPut[-seqLen:]
 
 def red_finder(img):
     lowerBound = np.array([0,0,100])
@@ -92,8 +97,6 @@ def from_cnt_cental(cnts):
 
 # Get the varoable from command line
 folder_name=get_args()
-
-
 
 camera = cv2.VideoCapture(0)
 
