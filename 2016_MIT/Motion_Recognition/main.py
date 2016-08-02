@@ -29,21 +29,8 @@ def get_args():
     # Return all variable values
     return folder_name
 
-def sequence_container(inPut, seqLen):
-    '''
-    1. inPut = list or tuple or .... anything with len(),
-    2. seqLen = limit the len, 
-    3. Use Scenario : 
-    '''
-    if len(inPut)>seqLen:
-        for i in range(seqLen):
-            inPut[i]=inPut[i+1]
-        del inPut[-1]
-        return inPut
-    else :
-        return inPut
 
-def sequence_container_v2(inPut, seqLen):
+def sequence_container(inPut, seqLen):
     if len(inPut)<seqLen:
         return inPut
     return inPut[-seqLen:]
