@@ -9,7 +9,7 @@ import motion_interpretation
 from scipy.stats.mstats import mode as statics_mode
 from motion_dictionary  import Motion_Dictionary
 from path_dictionary    import Path_DTW_Dictionary
-from gesture_dictionary import Gesture_DTW_Dictionary
+from gesture_dictionary import Gestrue_DTW_Dictionary
 import fastdtw
 import time
 
