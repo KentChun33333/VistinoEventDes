@@ -4,6 +4,7 @@
 'The Hand is moving with out holding something'
 'The hand is holding Scrw Driver doing something'
 
+
 from skimage.io import imread, imshow as read, show
 
 def model_dictionnary():

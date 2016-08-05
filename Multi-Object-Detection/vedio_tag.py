@@ -12,7 +12,8 @@ class AnnotatingVedioObject():
 	def __init__(self, filePath):
 		self.filePath = filePath
 		self.cap = imageio.get_reader(filePath)
-		self.height, self.width, self.channels = self.cap.get_data(0).shape
+		self._height, self._width, self._channels = self.cap.get_data(0).shape
+		self._maxFrameID = self.cap.get_length()-1
 
 	def CapRetrival(self, FrameId):
 		return self.cap.get_data(FrameId)
@@ -39,7 +40,7 @@ class AnnotatingVedioObject():
 			assert(fileName.split('.')[-1]=='avi')
 		else: 
 			fourcc = cv2.VideoWriter_fourcc(*'mp4v') # Be sure to use lower case
-		out = cv2.VideoWriter(fileName, fourcc, fps, (self.width, self.height)) 
+		out = cv2.VideoWriter(fileName, fourcc, fps, (self._width, self._height)) 
 		bar = Bar('Processing', max=(EndFrameID - StartFrameID)) 
 		for i in range(StartFrameID, EndFrameID):
 			img = self.cap.get_data(i)
