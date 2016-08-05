@@ -1,7 +1,6 @@
 
 
 import cv2, os, imageio
-import imageio
 from progress.bar import Bar
 from skimage.io import imread, imshow
 import time 
