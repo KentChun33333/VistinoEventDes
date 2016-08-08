@@ -44,3 +44,5 @@ class LocalBinaryPatterns:
         return hist
 
 
+
+

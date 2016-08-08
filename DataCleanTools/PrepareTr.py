@@ -1,45 +1,83 @@
-import argprase
+__Author__ = 'KentChiu'
+__Update__ = '2016-08-05'
+
+import glob, os, imageio, cv2
+import argprase as arg
+from json_conf import Conf
+#from sklearn.externals.joblib import Parallel, delayed
+from sklearn.externals import joblib
 
 
-def get_args():
-    '''use for single py'''
-    # Assign description to the help doc
-    parser = argparse.ArgumentParser(
-        description=''' use -conf to train model-detectors''')
-    # Add arguments
-    parser.add_argument('-conf', "--conf_path", help="Path to conf_hub",
+def ConfJSON():
+    parser = arg.ArgumentParser(description='use -conf to prepare training data')
+    parser.add_argument('-conf', "--conf_path", help="Path of conf.json",
             required=True)
-    parser.add_argument('-img', "--img", help="Path to img",
-            required=True)    
-    # Parses
-    args = parser.parse_args()
-    # Assign args to variables
-    conf_path = args.conf_path
-    img_path = arrgs.img
-    # Return all variable values
-    return conf_path, img_path
+    args = parser.parse_args() # Parses
+    return Conf(args.conf_path)
 
 
-parser = argparse.ArgumentParser(description='Prepare Training Data From Folders')
+folderList = confJSON['folderList']
 
-parser.add_argument('base_image_path', metavar='base', type=str,
-                    help='Path to the image to transform.')
-parser.add_argument('result_prefix', metavar='res_prefix', type=str,
-                    help='Prefix for the saved results.')
+def TrainFilePath(folderList, constrain=None, **kargs ):
+	if constrain is None:
+		constrain = ('avi', 'mp4')
+	for basePath in folderList :
+		for (rootDir, dirNames, fileNames) in os.walk(basePath):
+			for fileName in fileNames:
+				if fileName.split('.')[-1] in constrain:
+					yield os.path.join(rootDir, fileName), rootDir
 
-args = parser.parse_args()
-base_image_path = args.base_image_path
-result_prefix = args.result_prefix
+# glob.glob(os.path.join(conf['pos_feat_ph'],"*.feat"))
+
+# For Feature Extraction then IO
+
+######################
+# For Training Part ##
+######################
+##  ##
+######
+####
+####
 
 
 
-def training_data(videol, )
+
+TrX = []
+TrY = []
+
+
+model_1 = Haar_Recognizor()
+model_2 = test_with_pro_2
 
 
 
+multiModel = MultiModel([model1, model2])
 
 
 
+for vidPath, rootDir in TrainFilePath(folderList):
+	vid = imageio.get_reader(vidPath)
+	for i in range(vid.get_length()):
+		frame = vid.get_data(i)
+		TrX.append = model.extract(frame)
+		TrY.append = rootDir
+
+
+#(1) Minsubstraction (50~75 frames) 3 seconds
+
+####################
+# For Detect Part ##
+####################
+##  ##
+######
+####
+####
+
+
+# filesList = os.listdir(confJSON['folderName'])
+	filesList = os.walk(confJSON['folderName'])
+	filesList = [s for s in filesList if s.split('.')[-1] in ('avi', 'mp4')]
+	os.path.join()
 
 
 

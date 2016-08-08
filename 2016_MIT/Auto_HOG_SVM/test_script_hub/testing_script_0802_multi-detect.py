@@ -1,6 +1,6 @@
 
-'Picking up Screw Driver'
-'Putting down Screw Driver'
+'Grabing the Screw Driver'
+'Putting down the Screw Driver'
 'The Hand is moving with out holding something'
 'The hand is holding Scrw Driver doing something'
 

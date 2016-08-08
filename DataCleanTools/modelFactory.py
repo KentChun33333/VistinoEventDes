@@ -1,40 +1,62 @@
 
-'Picking up Screw Driver'
-'Putting down Screw Driver'
-'The Hand is moving with out holding something'
-'The hand is holding Scrw Driver doing something'
 
 
-
-class Multi_Model_Iterative_Detect:
-	def __init__(self , DetectObjectList):
-		'''
-		DetectObjectList = [ M1, M2 ]
-		Model must have detect attributes
-		'''
-		self.models = DetectObjectList
-	def detect(self, img):
-		raw = img.copy()
-		for model in self.models:
-			NewImg, position = model.detect(raw)
-		return NewImg
-	def showDetect(self,img):
-		show(self.detect(img))
+# Use skimage feature 
+from skimage import feature
+import numpy as np
 
 
-model1 = HaarCV_Recognizor()
-model2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))
-model2.detect(vid.get_data(310), showFlag='1')
+class ModelFactory:
+	def __init__(self, Encoder, Decoder ):
+		pass
+	def fit(self, TrX, TrY):
+		# Foreward
+		# Backward
+		# Cose Function
+		pass
+	def predict(self, TeX):
+		return Decoder(Encoder(TeX))
 
-def model_dictionnary():
-	['hand', 'ScrewDriver']
 
-def multiDetector(img, multiModels):
-	raw = img.copy()
-	feature_object=[]
-	for model in multiModels:
-		box, position = model(img.copy)
-		feature.append(box)
+class HOG:
+	def __init__(self, orientations=12, pixelsPerCell=(4, 4), cellsPerBlock=(2, 2), normalize=True):
+		# store the number of orientations, pixels per cell, cells per block, and
+		# whether normalization should be applied to the image
+		self.orientations = orientations
+		self.pixelsPerCell = pixelsPerCell
+		self.cellsPerBlock = cellsPerBlock
+		self.normalize = normalize
+
+	def describe(self, image):
+		# compute Histogram of Oriented Gradients features
+		hist = feature.hog(image, orientations=self.orientations, pixels_per_cell=self.pixelsPerCell,
+			cells_per_block=self.cellsPerBlock, normalise=self.normalize)
+		hist[hist < 0] = 0
+		# return the histogram
+		return hist.reshape(1,-1)
+
+class LocalBinaryPatterns:
+    def __init__(self, numPoints, radius):
+        # store the number of points and radius
+        self.numPoints = numPoints
+        self.radius = radius    
+
+    def describe(self, image, eps=1e-7):
+        # compute the Local Binary Pattern representation
+        # of the image, and then use the LBP representation
+        # to build the histogram of patterns
+        lbp = feature.local_binary_pattern(image, self.numPoints,
+        self.radius, method="uniform")
+        (hist, _) = np.histogram(lbp.ravel(),
+            bins=np.arange(0, self.numPoints + 3),
+            range=(0, self.numPoints + 2))
+
+        # normalize the histogram
+        hist = hist.astype("float")
+        hist /= (hist.sum() + eps)        
+
+        # return the histogram of Local Binary Patterns
+        return hist.reshape(1,-1)
 
 
 class HaarCV_Recognizor:
@@ -69,7 +91,7 @@ class HaarCV_Recognizor:
             result_box = 0
         return ref, result_box
 
-    def showDetect(self, img):
+    def recog_show(self, img):
         show(self.detect(img)[0])
 
     def recog_HandPosition(self, img):
@@ -118,5 +140,5 @@ class PureScrewDriverRecog:
         if showFlag is not None:
             show(ref)
         return ref, pick
-    def showDetect(self, img):
-        show(self.detect(img)[0])
+
+
