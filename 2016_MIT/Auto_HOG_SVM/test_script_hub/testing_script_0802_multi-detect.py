@@ -27,7 +27,35 @@ def multiDetector(img, multiModels):
     # initialize the object detector
     od = ObjectDetector(clf, hog)
 
+def test_with_pro_2(rawImg,pro):
+    ''' Use this fuc when ### above are first implement'''
+    ref = rawImg.copy()
+    img = auto_resized(rawImg,conf['train_resolution'])
+    img_gray = cv2.cvtColor( img , cv2.COLOR_BGR2GRAY)
+    roi = img_gray
+    (boxes, probs) = od.detect(roi, winStep=conf["step_size"], winDim=conf["sliding_size"],
+    pyramidScale=1.1, minProb=pro)
+    # since for size effect with the camera, pyramidScale = 1.001, mnust>1, 
+    # if positive size would change, we have to use 1.5 or 2 ...etc 
+    pick = non_max_suppression(np.array(boxes), probs, conf["overlap_thresh"])
+    orig = img.copy()
 
+    # Resize Back, I am GOD !!!!! 
+    y_sizeFactor = ref.shape[0]/float(img.shape[0])
+    x_sizeFactor = ref.shape[1]/float(img.shape[1])
+
+    # loop over the allowed bounding boxes and draw them
+    for (startX, startY, endX, endY) in pick:
+        #cv2.rectangle(orig, (startX, startY), (endX, endY), (0, 255, 0), 2)
+        startX = int(startX* x_sizeFactor)
+        endX   = int(endX  * x_sizeFactor)
+        startY = int(startY* y_sizeFactor)
+        endY   = int(endY  * y_sizeFactor)        
+        cv2.rectangle(ref, (startX, startY), (endX, endY), (0, 255, 0), 2)
+        cv2.putText(ref, "Hodling SkrewDriver", (startX, startY), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 4)
+        #print (startX, startY), (endX, endY)
+    show(ref)
+    return ref, pick
 #-------------------------------------------------------------------------
 class Haar_Recognizor:
     def __init__(self, xmlPath='/Users/kentchiu/MIT_Vedio/Rhand_no_tools/cascade.xml'):

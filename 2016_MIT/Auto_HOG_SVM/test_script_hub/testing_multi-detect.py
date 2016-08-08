@@ -4,38 +4,36 @@
 'The Hand is moving with out holding something'
 'The hand is holding Scrw Driver doing something'
 
+# model_1 = HaarCV_Recognizor()
+# model_2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))
+# Multi_Test=Multi_Model_Iterative_Detect([model_2, model_1])
+# Multi_Test.showDetect(vid.get_data(305))
+
+from common_tool_agent.common_func import non_max_suppression
+from common_tool_agent.conf import Conf
+from common_tool_agent.descriptor_agent.hog import HOG
+from common_tool_agent.detect import ObjectDetector
+from skimage.io import imread
+from skimage.io import imshow as show
+from common_tool_agent.common_func import auto_resized
+import numpy as np
+import cv2
 
 
 class Multi_Model_Iterative_Detect:
 	def __init__(self , DetectObjectList):
 		'''
-		DetectObjectList = [ M1, M2 ]
-		Model must have detect attributes
+		DetectObjectList = [ M1, M2, ...]
+		Models must have detect attributes
 		'''
 		self.models = DetectObjectList
 	def detect(self, img):
 		raw = img.copy()
 		for model in self.models:
-			NewImg, position = model.detect(raw)
-		return NewImg
+			raw, position = model.detect(raw)
+		return raw
 	def showDetect(self,img):
 		show(self.detect(img))
-
-
-model1 = HaarCV_Recognizor()
-model2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))
-model2.detect(vid.get_data(310), showFlag='1')
-
-def model_dictionnary():
-	['hand', 'ScrewDriver']
-
-def multiDetector(img, multiModels):
-	raw = img.copy()
-	feature_object=[]
-	for model in multiModels:
-		box, position = model(img.copy)
-		feature.append(box)
-
 
 class HaarCV_Recognizor:
     def __init__(self, xmlPath='/Users/kentchiu/MIT_Vedio/Rhand_no_tools/cascade.xml'):
@@ -89,7 +87,6 @@ class PureScrewDriverRecog:
         cellsPerBlock=tuple(conf["cells_per_block"]), normalize=conf["normalize"])
         # initialize the object detector
         od = ObjectDetector(clf, hog)
-
         ref = rawImg.copy()
         img = auto_resized(rawImg,conf['train_resolution'])
         img_gray = cv2.cvtColor( img , cv2.COLOR_BGR2GRAY)
