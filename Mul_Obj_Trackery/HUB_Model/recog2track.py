@@ -11,17 +11,7 @@ from HUB_dictionary.gesture_dictionary import Gestrue_DTW_Dictionary
 
 import time
 
-class Recog2Track():
-	def __init__(self, conf):
-		self.numFrames = 0
-		self.gesture = None
-		self.values = []
-		self.motionALL = []
-		self.motionSeq = []
-		self.motionLikehoodSeq = []
-		self.Dictionary = Motion_Dictionary()
-		self.PathDictionary = Path_DTW_Dictionary()
-		self.PathRegStr = "None" 
+
 
 # Get the varoable from command line
 folder_name=get_args()
