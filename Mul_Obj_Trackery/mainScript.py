@@ -15,17 +15,42 @@ from HUB_dictionary.gesture_dictionary import Gestrue_DTW_Dictionary
 
 from HUB_Model.multi_recog import Multi_Model_Iterative_Detect, HaarCV_Recognizor, PureScrewDriverRecog
 
+
+class Multi_Model_Iterative_Detect:
+    def __init__(self , DetectObjectList):
+        '''
+        DetectObjectList = [ M1, M2, ...]
+        Models must have detect attributes
+        '''
+        self.models = DetectObjectList
+
+    def detect(self, img):
+        raw = img.copy()
+        MultiObjPosition = [[]*]
+        for model in self.models:
+            raw, bbx = model.detect(raw)
+            position = ((bbx[0]+bbx[2])/2, (bbx[0]+bbx[2])/2)
+        return raw, position
+    def showDetect(self,img):
+        show(self.detect(img))
+
+
 class Recog2Track():
 	def __init__(self, mulRecog, vidObj):
 		''' mulRecog = [M1, M2, ...] '''
 		self.numFrames = 0
 		self.objNumber = len(mulRecog) 
-
-
-		self.position_values = np.array([])
+		##########################################
+		self.position_values = []
 		self.motionALL = [] # OutPutModel...
 		self.motionSeq = []
 		self.motionLikehoodSeq = []
+		for i in range(self.objNumber):
+			self.position_values.append([])
+			self.motionALL.append([])
+			self.motionSeq.append([])
+			self.motionLikehoodSeq.append([])
+		###########################################
 		self.motionDictionary = Motion_Dictionary()
 		self.pathDictionary = Path_DTW_Dictionary()
 		self.pathRegStr = "None" 

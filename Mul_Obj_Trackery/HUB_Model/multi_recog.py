@@ -22,29 +22,25 @@ import cv2
 
 
 class Multi_Model_Iterative_Detect:
-    def __init__(self , DetectObjectList):
+    def __init__(self , mulRecog):
         '''
-        DetectObjectList = [ M1, M2, ...]
+        mulRecog = [ M1, M2, ...]
         Models must have detect attributes
         '''
-        self.models = DetectObjectList
-        self.position =[]
+        self.models = mulRecog
+        self.objNums = len(mulRecog)
 
     def detect(self, img):
         raw = img.copy()
+        position = []
+        for i in range(self.objNums):
+            position.append([])
         for model in self.models:
-            raw, position = model.detect(raw)
-            self.position.append([])
-        return raw
+            raw, boundingBox = model.detect(raw)
+
+        return raw, position
     def showDetect(self,img):
         show(self.detect(img))
-
-    def extractFeature(self, img):
-        pass
-    def visualizeFeature(self, img):
-        pass
-    def vidSaving(self, ):
-        pass
 
 class HaarCV_Recognizor:
     def __init__(self, xmlPath='/Users/kentchiu/MIT_Vedio/Rhand_no_tools/cascade.xml'):
