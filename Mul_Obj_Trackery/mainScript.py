@@ -98,14 +98,14 @@ class Recog2Track():
 					position = ((tarBox[0]+tarBox[2])/2, (tarBox[0]+tarBox[2])/2)
 					self.position[modelID].append(position)
 				else: # Treat as Stationary
-					if len(self.position)>0:
+					if len(self.position[modelID])>0:
 						self.position[modelID].append(self.position[modelID][-1])
 				NewImg = self.motion_feature_extraction(NewImg,self.position[modelID], modelID)
 			self.numFrames+=1
 			imgSeq.append(NewImg)
 		self.pathRegStr = 'None'
 		return imgSeq
-		
+
 	def reinitialising_parameter(self):
 		self.position = []
 		self.motionALL = [] # OutPutModel...
