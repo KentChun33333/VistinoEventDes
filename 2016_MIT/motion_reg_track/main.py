@@ -219,7 +219,7 @@ def main_script(newImg,stateID):
             print '[*] the tarBox is None as recognition'
             result_img.append(img)
             result_position.append(tarBox)
-            return
+            return (0,0,0,0)
         believe = checkState_0()
         if believe==1:
             print (stateID)
