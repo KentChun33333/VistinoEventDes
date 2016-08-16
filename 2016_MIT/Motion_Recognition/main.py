@@ -9,7 +9,7 @@ import motion_interpretation
 from scipy.stats.mstats import mode as statics_mode
 from motion_dictionary  import Motion_Dictionary
 from path_dictionary    import Path_DTW_Dictionary
-from gesture_dictionary import Gestrue_DTW_Dictionary
+from gesture_dictionary import Gesture_DTW_Dictionary
 import fastdtw
 import time
 
@@ -61,7 +61,11 @@ def red_finder(img):
     return closed
 
 def find_coutur_record(img):
-	(_, cnts, _) = cv2.findContours(img.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+	if int(cv2.__version__[0])==2:
+		(cnts, _) = cv2.findContours(img.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+	else :
+		(_,cnts, _) = cv2.findContours(img.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+	# if 3.1, (_,cnts,_)
 	# 
 	clone = img.copy()
 	cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:1]

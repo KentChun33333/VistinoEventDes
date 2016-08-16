@@ -49,9 +49,10 @@ while(frameID<maxFrame):
     frame2 = vid.get_data(frameID)
 
     next = cv2.cvtColor(frame2,cv2.COLOR_BGR2GRAY)
-
-    flow = cv2.calcOpticalFlowFarneback(prvs,next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
-
+    if int(cv2.__version__[0])==3:
+        flow = cv2.calcOpticalFlowFarneback(prvs,next, None, 0.5, 3, 15, 3, 5, 1.2, 0)
+    else:
+        flow = cv2.calcOpticalFlowFarneback(prvs,next, 0.5, 3, 15, 3, 5, 1.2, 0)
     mag, ang = cv2.cartToPolar(flow[...,0], flow[...,1])
     hsv[...,0] = ang*180/np.pi/2
     hsv[...,2] = cv2.normalize(mag,None,0,255,cv2.NORM_MINMAX)
@@ -74,7 +75,9 @@ cv2.destroyAllWindows()
 LK method
 '''
 
-def lk_shiTomasi(vid=vid, startFrame, endFrame, frameBuff):
+def lk_shiTomasi(vid, startFrame, endFrame, frameBuff):
+    '''startFrame int , endFrame int, frameBuff int
+    '''
     # params for ShiTomasi corner detection
     feature_params = dict( maxCorners = 100,
                            qualityLevel = 0.3,
@@ -90,16 +93,15 @@ def lk_shiTomasi(vid=vid, startFrame, endFrame, frameBuff):
 
     # Take first frame and find corners in it
     #ret, old_frame = cap.read()
-    old_frame = vid.get_data(0)
+    old_frame = vid.get_data(startFrame)
     old_gray = cv2.cvtColor(old_frame, cv2.COLOR_BGR2GRAY)
     p0 = cv2.goodFeaturesToTrack(old_gray, mask = None, **feature_params)
 
     # Create a mask image for drawing purposes
     mask = np.zeros_like(old_frame)
 
-    maxFrame = 500
-    frameID=1
-    while(frameID<maxFrame):
+    frameID=startFrame+1
+    while(frameID<endFrame):
         frame = vid.get_data(frameID)
         frameID+=1
         frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
