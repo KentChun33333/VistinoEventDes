@@ -1,25 +1,21 @@
-# Object Detect Sys
+# Object Detect System
 Author : Kent (Jin-Chun Chiu)
-Goal : System for Object Detector
+Goal : System for Object Detector using HOG + SVM for object detection in positive-vs-negtive model.
 
+## Before running
+1. Prepare your dataset 
+2. config your parameters conf.json in conf_hub
+3. use training_agent -conf conf.json
 
 ## Run the code
-Ste
-```shell
-git clone https://github.com/bikz05/object-detector.git
-cd object-detector/bin
-test-object-detector
-```
 
-_The `test-object-detector` will download the [UIUC Image Database for Car Detection](https://cogcomp.cs.illinois.edu/Data/Car/) and train a classifier to detect cars in an image. The SVM model files will be stored in `data/models`, so that they can be resused later on._
+```shell
+cd Auto_HOG_SVM/
+python --conf conf_hub/conf_file.json 
+```
 
 ### Configuration File
 
-All the configurations are in the `data/config/config.cfg` configuration files. You can change it as per your need. Here is what the default configuration file looks like (which I have set for Car Detector)-
+1. Configurations are in the `conf_hub/conf_xxx.json` JSON files. 
+2. You can change it as per your need by pointing the right file_path in your environments.
 
-
-Step-by-Step
-
-1. Prepare your dataset
-2. config your parameters conf.json in conf_hub
-3. use training_agent -conf conf.json
