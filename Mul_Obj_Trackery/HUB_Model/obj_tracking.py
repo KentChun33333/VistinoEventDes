@@ -42,7 +42,7 @@ prvs = cv2.cvtColor(frame1,cv2.COLOR_BGR2GRAY)
 hsv = np.zeros_like(frame1)
 hsv[...,1] = 255
 
-maxFrame = 500
+maxFrame = 600
 frameID=1
 while(frameID<maxFrame):
     #ret, frame2 = cap.read()
@@ -59,6 +59,8 @@ while(frameID<maxFrame):
     bgr = cv2.cvtColor(hsv,cv2.COLOR_HSV2BGR)
 
     cv2.imshow('frame2',bgr)
+    cv2.imshow('frame1',frame2)
+    result.append(bgr)
     k = cv2.waitKey(30) & 0xff
     if k == 27:
         break
@@ -75,11 +77,11 @@ cv2.destroyAllWindows()
 LK method
 '''
 
-def lk_shiTomasi(vid, startFrame, endFrame, frameBuff):
+def lk_shiTomasi(vid, startFrame, endFrame, frameBuff, result = []):
     '''startFrame int , endFrame int, frameBuff int
     '''
     # params for ShiTomasi corner detection
-    feature_params = dict( maxCorners = 100,
+    feature_params = dict( maxCorners = 200,#100
                            qualityLevel = 0.3,
                            minDistance = 7,
                            blockSize = 7 )
@@ -121,6 +123,7 @@ def lk_shiTomasi(vid, startFrame, endFrame, frameBuff):
         img = cv2.add(frame,mask)   
 
         cv2.imshow('frame',img)
+        result.append(img)
         k = cv2.waitKey(30) & 0xff
         if k == 27:
             break   
@@ -129,6 +132,7 @@ def lk_shiTomasi(vid, startFrame, endFrame, frameBuff):
         old_gray = frame_gray.copy()
         p0 = good_new.reshape(-1,1,2)
     cv2.destroyAllWindows()
+    return result
 #cap.release()
 
 
@@ -147,7 +151,7 @@ def lk_shiTomasi(vid, startFrame, endFrame, frameBuff):
 
 
 
-
+def 
 # params for ShiTomasi corner detection
 feature_params = dict( maxCorners = 100,
                        qualityLevel = 0.3,
@@ -194,8 +198,8 @@ while(frameID<maxFrame):
         cv2.circle(frame,(a,b),5,color[i].tolist(),-1)
     img = cv2.add(frame,mask)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-    cv2.imshow('frame',mask)
+    result.append(img)
+    cv2.imshow('frame',img)
     k = cv2.waitKey(30) & 0xff
     if k == 27:
         break

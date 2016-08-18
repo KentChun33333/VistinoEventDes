@@ -6,7 +6,6 @@ from skimage.io import imread, imshow
 import time 
 
 
-
 class AnnotatingVedioObject():
 
 	def __init__(self, filePath):
