@@ -4,7 +4,7 @@
 - Feature : Using HOG + SVM for object detection in positive-vs-negtive model.
 
 ## Before running
-1. Prepare your dataset 
+1. Prepare your dataset ( positive & negative )
 2. config your parameters conf.json in conf_hub
 3. use training_agent -conf conf.json
 
