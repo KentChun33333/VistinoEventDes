@@ -1,7 +1,7 @@
 # Object Detect System
-Author : Kent (Jin-Chun Chiu)
-Goal : System for Object Detector 
-Feature : Using HOG + SVM for object detection in positive-vs-negtive model.
+- Author : Kent (Jin-Chun Chiu)
+- Goal : System for Object Detector 
+- Feature : Using HOG + SVM for object detection in positive-vs-negtive model.
 
 ## Before running
 1. Prepare your dataset 
