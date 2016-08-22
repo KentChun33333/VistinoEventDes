@@ -79,7 +79,7 @@ class PureScrewDriverRecog:
         '''Ex: conf = Conf('/Users/kentchiu/VistinoEventDes/2016_MIT/Auto_HOG_SVM/conf_hub/conf_pureScrewDriver_2.json')'''
         self.conf = conf
 
-    def detect(self, rawImg, pro=0.6, scale=1.3):
+    def detect(self, rawImg, pro=0.7, scale=1.3):
         hog = HOG(orientations=self.conf["orientations"], pixelsPerCell=tuple(self.conf["pixels_per_cell"]),
         cellsPerBlock=tuple(self.conf["cells_per_block"]), normalize=self.conf["normalize"])
         # initialize the object detector
@@ -108,7 +108,7 @@ class PureScrewDriverRecog:
             endX   = int(endX  * x_sizeFactor)
             startY = int(startY* y_sizeFactor)
             endY   = int(endY  * y_sizeFactor)    
-            if startX < 300 or startY > 250 or startX > 400:
+            if startX < 300 or startY > 250 or startX > 400 or (endX -startX)>200:
                 continue    
             cv2.rectangle(ref, (startX, startY), (endX, endY), (0, 255, 0), 2)
             cv2.putText(ref, "SkrewDriver", (startX, startY), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 4)

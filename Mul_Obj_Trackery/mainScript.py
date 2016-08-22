@@ -121,6 +121,9 @@ class Recog2Track():
 		self.pathRegStr = "None" 
 		self.actionStr = "None"
 
+	def feature_describe(self):
+		return self.motionLikehoodSeq
+
 '''
 model_1 = HaarCV_Recognizor()
 model_2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))			

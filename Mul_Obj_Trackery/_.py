@@ -186,3 +186,13 @@ def base(N, memo):
 
 import timeit
 
+
+import cv2
+import skimage
+
+import pandas as pd
+import numpy as np
+
+cv2
+
+
