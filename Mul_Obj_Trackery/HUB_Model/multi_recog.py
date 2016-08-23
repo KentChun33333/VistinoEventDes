@@ -17,6 +17,7 @@ class Multi_Model_Iterative_Detect:
         '''
         mulRecog = [ M1, M2, ...]
         Models must have detect attributes
+        This model is use for mulRecog iterations, not including motions 
         '''
         self.models = mulRecog
         self.objNums = len(mulRecog)
@@ -33,7 +34,7 @@ class Multi_Model_Iterative_Detect:
         show(self.detect(img)[0])
 
 class HaarCV_Recognizor:
-    def __init__(self, xmlPath='/Users/kentchiu/MIT_Vedio/Rhand_no_tools/cascade.xml'):
+    def __init__(self, xmlPath='model_hub/opencv_cascade/Rhand_no_tools/cascade.xml'):
         # store the number of orientations, pixels per cell, cells per block, and
         # whether normalization should be applied to the image
         self.xmlPath=xmlPath
@@ -120,13 +121,200 @@ class PureScrewDriverRecog:
         elif len(tarBoxSet)==1:
             tarBox = tarBoxSet.pop()
         else:
-            tarBox = []
+            tarBox = [] # if no obj detect , retuen []
         return ref, tarBox
 
     def show_detect(self, img, pro=0.6, scale=1.3):
         show(self.detect(img,pro, scale)[0])
 
+class SKin_Hand_Detection():
+    def __init__(self, Flag = False):
+        self.path = 'model_hub/opencv_cascade/frontalFace10/haarcascade_frontalface_alt.xml'
+        self.Flag = Flag
+        if Flag is True:
+            path = self.path
+            model_1 = HaarCV_Recognizor(path)
 
+    def usage(self):
+        print '''
+        model = SKin_Hand_Detection()
+        Recog2Track
+        '''
+
+    def face_Remove(self, frame):
+        face_cascade = cv2.CascadeClassifier(self.path)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        faces = face_cascade.detectMultiScale(gray,
+            scaleFactor=1.2,
+            minNeighbors=10, #35 ==> 1
+            ) 
+        # Detect the face and remove it from hand detection 
+        for (x,y,w,h) in faces:
+            tarBox = (x,y,x+w, y+h)
+            cv2.rectangle(frame,(tarBox[0],tarBox[1]),(tarBox[2],tarBox[3]),(10,10,10),-1)
+        if self.Flag is True:
+        # Detect the face and remove it from hand detection with Other Model 
+            _, tarBox = model_1.detect(clone)
+            if len(tarBox)==4:
+                cv2.rectangle(frame,(tarBox[0],tarBox[1]),(tarBox[2],tarBox[3]),(10,10,10),-1)
+        return frame
+
+    def skin_thresh_contours(self,frame):
+        '''
+        imput the frame, 
+        return thresh & contours 
+        '''
+
+        # blut the image
+        blur = cv2.blur(frame,(3,3))    
+        
+        #Convert to HSV color space
+        hsv = cv2.cvtColor(blur,cv2.COLOR_BGR2HSV)
+        
+        #Create a binary image with where white will be skin colors and rest is black
+        mask2 = cv2.inRange(hsv,np.array([2,50,50]),np.array([15,255,255]))
+        
+        #Kernel matrices for morphological transformation    
+        kernel_square = np.ones((11,11),np.uint8)
+        kernel_ellipse= cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5,5))
+        
+        #Perform morphological transformations to filter out the background noise
+        #Dilation increase skin color area
+        #Erosion increase skin color area
+        dilation = cv2.dilate(mask2,kernel_ellipse,iterations = 1)
+        erosion = cv2.erode(dilation,kernel_square,iterations = 1)    
+        dilation2 = cv2.dilate(erosion,kernel_ellipse,iterations = 1)    
+        filtered = cv2.medianBlur(dilation2,5)
+        kernel_ellipse= cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(8,8))
+        dilation2 = cv2.dilate(filtered,kernel_ellipse,iterations = 1)
+        kernel_ellipse= cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5,5))
+        dilation3 = cv2.dilate(filtered,kernel_ellipse,iterations = 1)
+        median = cv2.medianBlur(dilation2,5)
+        ret,thresh = cv2.threshold(median,127,255,0)
+        
+        #Find contours of the filtered frame    
+
+        #_, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)  
+        if int(cv2.__version__[0])==2:
+            (contours, _) = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        else :
+            (_,contours, _) = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE) 
+
+        return thresh, contours
+
+
+    def detect(self, frame):
+        '''
+        return labeled img and bounding box as tarBox
+        it could be used in the Recog2Track model
+        '''
+        # Add Clone for Hand Detection Operation 
+        # The clone img is not draw by solid rectangle or ...etc 
+        clone = frame.copy()     
+        
+        # Remove the Face Skin Region 
+        frame = self.face_Remove(frame)
+        # cv2.imshow("Face Remove : Press ESC to EXIT", frame)
+
+        # find the skin thresh image and its contours
+        thresh, contours = self.skin_thresh_contours(frame)
+
+        
+        #Find Max contour area (Assume that hand is in the frame)
+        max_area=100
+        ci=0    
+        for i in range(len(contours)):
+            cnt=contours[i]
+            area = cv2.contourArea(cnt)
+            if(area>max_area):
+                max_area=area
+                ci=i  
+                
+        #Largest area contour
+        if len(contours)==0:
+            tarBox = [] # if None return []
+            return clone, tarBox
+
+        cnts = contours[ci]    
+
+        #Find convex hull
+        hull = cv2.convexHull(cnts)
+        
+        #Find convex defects
+        hull2 = cv2.convexHull(cnts,returnPoints = False)
+        defects = cv2.convexityDefects(cnts,hull2)
+        
+        #Get defect points and draw them in the original image
+        FarDefect = []
+        for i in range(defects.shape[0]):
+            s,e,f,d = defects[i,0]
+            start = tuple(cnts[s][0])
+            end = tuple(cnts[e][0])
+            far = tuple(cnts[f][0])
+            FarDefect.append(far)
+            cv2.line(clone,start,end,[0,255,0],1)
+            cv2.circle(clone,far,10,[100,255,255],3)
+        
+        #Find moments of the largest contour
+        moments = cv2.moments(cnts)
+        
+        #Central mass of first order moments
+        if moments['m00']!=0:
+            cx = int(moments['m10']/moments['m00']) # cx = M10/M00
+            cy = int(moments['m01']/moments['m00']) # cy = M01/M00
+        centerMass=(cx,cy)    
+        
+        #Draw center mass
+        cv2.circle(clone,centerMass,7,[100,0,255],2)
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(clone,'Center',tuple(centerMass),font,2,(255,255,255),2)     
+        
+        #Distance from each finger defect(finger webbing) to the center mass
+        distanceBetweenDefectsToCenter = []
+        for i in range(0,len(FarDefect)):
+            x =  np.array(FarDefect[i])
+            centerMass = np.array(centerMass)
+            distance = np.sqrt(np.power(x[0]-centerMass[0],2)+np.power(x[1]-centerMass[1],2))
+            distanceBetweenDefectsToCenter.append(distance)
+        
+        #Get an average of three shortest distances from finger webbing to center mass
+        sortedDefectsDistances = sorted(distanceBetweenDefectsToCenter)
+        AverageDefectDistance = np.mean(sortedDefectsDistances[0:2])
+     
+        #Get fingertip points from contour hull
+        #If points are in proximity of 80 pixels, consider as a single point in the group
+        finger = []
+        for i in range(0,len(hull)-1):
+            if (np.absolute(hull[i][0][0] - hull[i+1][0][0]) > 80) or ( np.absolute(hull[i][0][1] - hull[i+1][0][1]) > 80):
+                if hull[i][0][1] <500 :
+                    finger.append(hull[i][0])
+        
+        #The fingertip points are 5 hull points with largest y coordinates  
+        finger =  sorted(finger,key=lambda x: x[1])   
+        fingers = finger[0:5]
+        
+        #Calculate distance of each finger tip to the center mass
+        fingerDistance = []
+        for i in range(0,len(fingers)):
+            distance = np.sqrt(np.power(fingers[i][0]-centerMass[0],2)+np.power(fingers[i][1]-centerMass[0],2))
+            fingerDistance.append(distance)
+        
+        #Finger is pointed/raised if the distance of between fingertip to the center mass is larger
+        #than the distance of average finger webbing to center mass by 130 pixels
+        result = 0
+        for i in range(0,len(fingers)):
+            if fingerDistance[i] > AverageDefectDistance+130:
+                result = result +1
+
+        
+        # Print bounding rectangle
+        x,y,w,h = cv2.boundingRect(cnts)
+        img = cv2.rectangle(clone,(x,y),(x+w,y+h),(0,255,0),2)
+        
+        cv2.drawContours(clone,[hull],-1,(255,255,255),2)
+        # bounding box recontruction in order to fit into the Recog2Track()
+        tarBox = (cx-10, cy-10, cx+10, cy+10)
+        return clone, tarBox
 
 
 'Picking up Screw Driver'
