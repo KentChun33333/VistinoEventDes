@@ -96,7 +96,12 @@ while(1):
     ret,thresh = cv2.threshold(median,127,255,0)
     
     #Find contours of the filtered frame
-    _, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)   
+
+    #_, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)  
+    if int(cv2.__version__[0])==2:
+        (contours, _) = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    else :
+        (_,contours, _) = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE) 
     
     #Draw Contours
     #cv2.drawContours(frame, cnt, -1, (122,122,0), 3)

@@ -14,7 +14,7 @@ from HUB_dictionary.path_dictionary    import Path_DTW_Dictionary
 from HUB_dictionary.gesture_dictionary import Gesture_DTW_Dictionary
 from HUB_Model.multi_recog import Multi_Model_Iterative_Detect, HaarCV_Recognizor, PureScrewDriverRecog
 
-
+from com_func.conf import Conf
 
 class Recog2Track():
 	def __init__(self, mulRecog, modelNameList):
@@ -125,15 +125,39 @@ class Recog2Track():
 		return self.motionLikehoodSeq
 
 '''
+@ MAC OS
 model_1 = HaarCV_Recognizor()
-model_2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))			
+model_2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))	
+
+@ ROG computer
+model_1 = HaarCV_Recognizor(
+	'C:/Users/kentc/Documents/GitHub/VistinoEventDes/2016_MIT/Auto_HOG_SVM/model_hub/svm/PureScrewDriver_2.model')	
+PureScrewDriverRecog(Conf('C:/Users/kentc/Documents/GitHub/VistinoEventDes/2016_MIT/Auto_HOG_SVM/conf_hub/conf_pureScrewDriver_2.json'))		
 ReTesT = Recog2Track([model_1,model_2],['Hand', 'SkrewDriver'])
 output = ReTesT.perform_VID_analysis(270,350,vid)
 video_saving('~/MIT_Vedio/test_0812_New3.mp4',8.0,output)
 '''
 
+
+#Model_2 = PureScrewDriverRecog(Conf('C:/Users/kentc/Documents/GitHub/VistinoEventDes/2016_MIT/Auto_HOG_SVM/conf_hub/conf_pureScrewDriver_2.json'))
+#model = Multi_Model_Iterative_Detect([Model_1,Model_2])#
+
+#model.showDetect(vid.get_data(12))#
+
+#show(Model_2.detect(vid.get_data(300), pro = 0.6)[0])
+#show(Model_2.detect(vid.get_data(300), pro = 0.8)[0])
+#show(Model_2.detect(vid.get_data(300), pro = 0.85)[0])
+#model = Multi_Model_Iterative_Detect([Model_1,Model_2])
+#model.showDetect(vid.get_data(305))
+#model.showDetect(vid.get_data(315))
+#model.showDetect(vid.get_data(1))
+#model.showDetect(vid.get_data(12))
+
+# vid = imageio.get_reader('D:/2016-01-21//10.167.10.158_01_20160121082638418_1.mp4')
 class Dispach_Agent_Static_to_Dynamic():
 	def __init__():
 		pass
 
 
+PureScrewDriverRecog(Conf('C:/Users/kentc/Documents/GitHub/VistinoEventDes/2016_MIT/Auto_HOG_SVM/conf_hub/conf_pureScrewDriver_2.json'))
+model.showDetect(vid.get_data(305))
