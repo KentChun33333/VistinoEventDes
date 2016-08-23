@@ -56,18 +56,7 @@ while(1):
     clone = frame.copy() 
     # [*] Add Clone for Hand_Detection Operation
 
-    #frame = auto_resized(frame, (600,1000))
-    # [*]rmface
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    #gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
-#    faces = face_cascade.detectMultiScale(gray,
-#        scaleFactor=1.2,
-#        minNeighbors=15, #35 ==> 1
-#        )
-#    for (x,y,wid,height) in faces:
-#        rectangle = np.zeros((wid, height), dtype = "uint8")
-#        cv2.rectangle(frame, (x, y), (x+wid, y+height), 255, -1)
-#    
+
     #Blur the image
     blur = cv2.blur(frame,(3,3))
  	
@@ -223,3 +212,9 @@ while(1):
 
 cap.release()
 cv2.destroyAllWindows()
+
+
+def Skin_Hand_detector(img):
+    return newIMG, tarBox
+
+

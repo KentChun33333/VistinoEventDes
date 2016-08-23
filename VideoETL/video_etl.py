@@ -40,7 +40,7 @@ def video_saving_IO(fileName, imgSequence):
         writer.append_data(image)
     # Release everything if job is finished
     writer.close()
-    print ('[*] Finish Saving {} at {}'.format(fileName, os.getcwd()))
+    print ('[*] Finish Saving {} at {}'.format(fileName, os.pardir.join([os.getcwd(),fileName])))
 
 
 def video_saving_CV(fileName, fps, imgSequence):

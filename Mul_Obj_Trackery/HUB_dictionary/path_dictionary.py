@@ -49,11 +49,11 @@ class Path_DTW_Dictionary():
 		self.pathDictionary['Conter Clockwise Circle.......' ]  = [8,14,4,11,10,13,6,15]
 
 
-		self.pathDictionary['Horizontal Wave'         ]  = [4,0,4,0]
-		self.pathDictionary['Vertical Wave'           ]  = [10,8,10,8]
+		self.pathDictionary['Horizontal Wave'         ]  = [4,0,4,0,4,0,4,0]
+		self.pathDictionary['Vertical Wave'           ]  = [10,8,10,8,10,8,10,8]
 
-		self.pathDictionary['Horizontal Wave'         ]  = [0,4,0,4]
-		self.pathDictionary['Vertical Wave'           ]  = [8,10,8,10]
+		self.pathDictionary['Horizontal Wave'         ]  = [0,4,0,4,0,4,0,4]
+		self.pathDictionary['Vertical Wave'           ]  = [8,10,8,10,8,10,8,10]
 
 
 	def search(self,value):

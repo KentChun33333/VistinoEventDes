@@ -1,6 +1,8 @@
 __Author__='Kent Chiu'
 __CreateDate__ = '2016-08-08'
+
 # This Script is based on the previous version from Motion_Recognition
+# For realtime process, could ref it
 
 import numpy as np
 import argparse
@@ -12,14 +14,15 @@ from scipy.stats.mstats import mode as statics_mode
 from HUB_dictionary.motion_dictionary  import Motion_Dictionary
 from HUB_dictionary.path_dictionary    import Path_DTW_Dictionary
 from HUB_dictionary.gesture_dictionary import Gesture_DTW_Dictionary
-from HUB_Model.multi_recog import Multi_Model_Iterative_Detect, HaarCV_Recognizor, PureScrewDriverRecog
+from HUB_Model.multi_recog import HaarCV_Recognizor, PureScrewDriverRecog
 
 from com_func.conf import Conf
 
 class Recog2Track():
-	def __init__(self, mulRecog, modelNameList):
+	def __init__(self, mulRecog, modelNameList, path_re, path_recognition_Flag=True):
 		''' mulRecog = [M1, M2, ...]             
 		    modelNameList = [str(M1), str(M2)...] '''
+		self.numFrames = 0
 		self.modelNameList = modelNameList
 		self.modelNum = len(mulRecog)
 		##########################################
@@ -35,6 +38,7 @@ class Recog2Track():
 			self.motionLikehoodSeq.append([])
 			self.refImgforMatch.append([])
 		###########################################
+		self.path_recognition = path_recognition_Flag
 		self.pathRegStr = "None" 
 		self.actionStr = "None"
 		self.recogModels = mulRecog
@@ -53,7 +57,11 @@ class Recog2Track():
 		pass
 
 	def motion_feature_extraction(self, imgAFrecog ,pointsSet,modelID):
-		'''None 0 pointsSet'''
+		'''
+		imgAFrecog : the raw img after static recognition 
+		pointsSet  : the location of the objects
+		modelID    : the name that we predifined when iniciation the class
+		'''
 		Dictionary = Motion_Dictionary()
 		PathDictionary = Path_DTW_Dictionary() 
 		if len(pointsSet)>3 :
@@ -70,8 +78,21 @@ class Recog2Track():
 			# %.2f = float with 2 dicimal 
 			modelName = self.modelNameList[modelID]
 			cv2.putText(imgAFrecog, 
-				"The is %s : %s" % (modelName,motionStr),
-				 (20, 50*(1+modelID)), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 255, 255), 7)
+				"The %s is %s" % (modelName,motionStr),
+				 (20, 50*(1+modelID)), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 255, 255), 6)
+			if len(self.motionLikehoodSeq[modelID])>10 and (self.path_recognition is True):
+				
+				# put it in small LSTM or RNN for NPL
+				# put it into DTW search/match
+				PathRegStr_tmp = PathDictionary.search(self.motionLikehoodSeq[modelID][-7:])
+				if PathRegStr_tmp == 'None':
+					pass
+				else:
+					cv2.putText(imgAFrecog, 
+						"The %s is %s" % (modelName, PathRegStr_tmp),
+						(20, 100*(1+modelID)), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 255, 255), 6)
+					self.pathRegStr = PathRegStr_tmp
+				
 			# This part spared by not doing path Recognition, 
 			# if we want to do path recog, please ref 2016MIT/Motion_Recognition
 		return imgAFrecog
@@ -103,8 +124,28 @@ class Recog2Track():
 				NewImg = self.motion_feature_extraction(NewImg,self.position[modelID], modelID)
 			self.numFrames+=1
 			imgSeq.append(NewImg)
-		self.pathRegStr = 'None'
+		
 		return imgSeq
+
+	def perform_WebCam_analysis(self, capIMG):
+		'''vidObj based on the image io OBJ'''
+		NewImg = capIMG.copy()
+		# for out put on the motino recognition 
+		cv2.rectangle(NewImg,(0,0),(800,125),(10,10,10),-1)
+		for modelID, model in enumerate(self.recogModels):
+			NewImg, tarBox = model.detect(NewImg)
+			print 'Processing : ( Model : {}, Frame : {} )'.format(modelID, self.numFrames)
+			if len(tarBox)>0: # obj been detected
+				assert len(tarBox)==4
+				position = ((tarBox[0]+tarBox[2])/2, (tarBox[0]+tarBox[2])/2)
+				self.position[modelID].append(position)
+			else: # Treat as Stationary
+				if len(self.position[modelID])>0:
+					self.position[modelID].append(self.position[modelID][-1])
+			NewImg = self.motion_feature_extraction(NewImg,self.position[modelID], modelID)
+		self.numFrames+=1
+		self.pathRegStr = 'None'
+		return NewImg
 
 	def reinitialising_parameter(self):
 		self.position = []
@@ -123,6 +164,10 @@ class Recog2Track():
 
 	def feature_describe(self):
 		return self.motionLikehoodSeq
+
+class Dispach_Agent_Static_to_Dynamic():
+	def __init__():
+		pass
 
 '''
 @ MAC OS
@@ -154,10 +199,10 @@ video_saving('~/MIT_Vedio/test_0812_New3.mp4',8.0,output)
 #model.showDetect(vid.get_data(12))
 
 # vid = imageio.get_reader('D:/2016-01-21//10.167.10.158_01_20160121082638418_1.mp4')
-class Dispach_Agent_Static_to_Dynamic():
-	def __init__():
-		pass
 
-
+'''
 PureScrewDriverRecog(Conf('C:/Users/kentc/Documents/GitHub/VistinoEventDes/2016_MIT/Auto_HOG_SVM/conf_hub/conf_pureScrewDriver_2.json'))
 model.showDetect(vid.get_data(305))
+
+model_1 = HaarCV_Recognizor('model_hub/opencv_cascade/frontalFace10/haarcascade_frontalface_alt.xml')
+'''
