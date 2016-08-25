@@ -5,7 +5,7 @@ __Author__ ='Kent Chiu'
 # implement by SKin_Hand_Detection class
 # - MIT2016/Motion_Recognition/Hand_detection_0706.py
 # also adapted to the Mot2Reg class for Multi_object_Reg2Mot
-
+import os
 import cv2
 import numpy as np
 import argparse
@@ -29,6 +29,12 @@ def video_saving_IO(fileName, imgSequence):
     writer.close()
     print ('[*] Finish Saving {} at {}'.format(fileName, os.pardir.join([os.getcwd(),fileName])))
 
+def auto_resized(img,size):
+    '''size = (width,height)'''
+    size = tuple(size)
+    resize_img = cv2.resize(img, size, interpolation=cv2.INTER_LINEAR)
+    return resize_img
+
 def get_args():
     parser = argparse.ArgumentParser(
         description=''' Script read both depth and rgb frames from kinetic 
@@ -42,6 +48,7 @@ def get_args():
     # Return all variable values
     return output_Video
 
+
 #Open Camera object
 cap = cv2.VideoCapture(0)
 
@@ -50,6 +57,7 @@ main_Recog2Track = Recog2Track([model_1],['Hand'], True)
 
 
 output_Video = get_args()
+print output_Video
 
 if output_Video is not None:
     imgSequence = []
@@ -57,7 +65,11 @@ if output_Video is not None:
 while(1):
     #Capture frames from the camera
     ret, frame = cap.read()
+<<<<<<< HEAD
     frame = imutils.resize(frame, width=600)
+=======
+    frame=auto_resized(frame, (960,720))
+>>>>>>> origin/master
     result = main_Recog2Track.perform_WebCam_analysis(frame)
     if output_Video is not None:
         imgSequence.append(result)
@@ -68,7 +80,7 @@ while(1):
     k = cv2.waitKey(5) & 0xFF
     if k == 27:
         if output_Video is not None:
-            video_saving_IO(fileName, imgSequence)
+            video_saving_IO(output_Video, imgSequence)
 
 
 cap.release()

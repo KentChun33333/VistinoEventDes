@@ -1,0 +1,35 @@
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">seq2seq</span>
+<span class="kn">from</span> <span class="nn">seq2seq.models</span> <span class="kn">import</span> <span class="n">SimpleSeq2seq</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">SimpleSeq2seq</span><span class="p">(</span><span class="n">input_dim</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">output_length</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">output_dim</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;mse&#39;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;rmsprop&#39;</span><span class="p">)</span>
+
+
+
+<span class="n">final_model</span><span class="o">.</span><span class="n">fit</span><span class="p">([</span><span class="n">input_data_1</span><span class="p">,</span> <span class="n">input_data_2</span><span class="p">],</span> <span class="n">targets</span><span class="p">)</span>  <span class="c1"># we pass one data array per model input</span>
+
+
+
+
+<span class="k">class</span> <span class="nc">Solution</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">divide</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dividend</span><span class="p">,</span> <span class="n">divisor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :type dividend: int</span>
+<span class="sd">        :type divisor: int</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">divisor</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">MAX_INT</span>
+        <span class="n">positive</span> <span class="o">=</span> <span class="p">(</span><span class="n">dividend</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">is</span> <span class="p">(</span><span class="n">divisor</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">dividend</span><span class="p">,</span> <span class="n">divisor</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dividend</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">divisor</span><span class="p">)</span>
+        <span class="n">tmp</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">while</span> <span class="n">dividend</span> <span class="o">&gt;=</span><span class="n">divisor</span> <span class="p">:</span>
+            <span class="n">dividend</span><span class="o">-=</span><span class="n">divisor</span>
+            <span class="n">tmp</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">positive</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="o">-</span><span class="n">tmp</span>
+        <span class="k">return</span> <span class="n">tmp</span>
+
+
+        
+</pre></div>
