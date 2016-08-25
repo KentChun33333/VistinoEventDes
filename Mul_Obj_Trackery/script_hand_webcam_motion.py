@@ -12,7 +12,7 @@ import argparse
 import motion_interpretation
 import imageio
 from scipy.stats.mstats import mode as statics_mode
-
+import imutils
 from HUB_dictionary.motion_dictionary  import Motion_Dictionary
 from HUB_dictionary.path_dictionary    import Path_DTW_Dictionary
 from HUB_dictionary.gesture_dictionary import Gesture_DTW_Dictionary
@@ -57,12 +57,12 @@ if output_Video is not None:
 while(1):
     #Capture frames from the camera
     ret, frame = cap.read()
+    frame = imutils.resize(frame, width=600)
     result = main_Recog2Track.perform_WebCam_analysis(frame)
-    imgSequence.append(result)
+    if output_Video is not None:
+        imgSequence.append(result)
 
     cv2.imshow("Motion Recognition : Press ESC to EXIT", result)
-
-    print main_Recog2Track.__dict__['motionLikehoodSeq'][-7:]
 
     #close the output video by pressing 'ESC'
     k = cv2.waitKey(5) & 0xFF
