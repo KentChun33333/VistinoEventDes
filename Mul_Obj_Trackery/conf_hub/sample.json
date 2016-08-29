@@ -1,0 +1,65 @@
+{
+	#######
+	# Folder PATHS
+	#######
+	"image_dataset": "datasets/caltech101/101_ObjectCategories/car_side",
+	"image_annotations": "datasets/caltech101/Annotations/car_side",
+	"image_distractions": "/Users/kentchiu/MIT_Vedio/2D_DataSet/BackGround/",
+	"neg_feat_ph" : "",
+	"pos_feat_ph" : "",
+	"model_ph" : "",
+
+	######
+	# Resolution 
+	######
+	"raw_resolution":[],
+	"train_resolution":[440,240],
+	"train_size":[40,40], # ~ pos object in train_resolution
+	"slide_win_size":[40,40], # must equal above
+
+
+
+
+	#######
+	# FEATURE EXTRACTION
+	#######
+	"features_path": "output/cars/car_features.hdf5",
+	"percent_gt_images": 0.5, #how many persentage for traning from ground truth img
+	"offset": 5,
+	"use_flip": true,
+	"num_distraction_images": 500,
+	"num_distractions_per_image": 10,
+
+	#######
+	# HISTOGRAM OF ORIENTED GRADIENTS DESCRIPTOR
+	#######
+	"orientations": 9,
+	"pixels_per_cell": [8, 8],
+	"cells_per_block": [2, 2],
+	"normalize": true,
+
+	#######
+	# OBJECT DETECTOR, Feature No more than 1000
+	#######
+	"window_step": 4,
+	"step_size": 10,### n_feat.py,
+	"window_size": [40,40],###
+	"overlap_thresh": 0.3,
+	"pyramid_scale": 1.5,
+	"window_dim": [120, 120],
+	"min_probability": 0.7,
+
+	#######
+	# LINEAR SVM
+	#######
+	"classifier_path": "output/cars/model.cpickle",
+	"C": 0.01,
+
+	#######
+	# HARD NEGATIVE MINING
+	#######
+	"hn_num_distraction_images": 50,
+	"hn_window_step": 4,
+	"hn_pyramid_scale": 1.5,
+	"hn_min_probability": 0.51
+}

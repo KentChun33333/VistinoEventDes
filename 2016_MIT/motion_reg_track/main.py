@@ -214,6 +214,8 @@ def main_script(newImg,stateID):
     global memoState_1
     if stateID==0:
         #img, tarBox = cascade_test_15_c3(newImg)
+
+        
         img, tarBox = test_with_pro_depth_size(newImg,0.87)
         if tarBox==0:
             print '[*] the tarBox is None as recognition'
