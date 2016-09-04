@@ -2,7 +2,7 @@ from math import sqrt
 from sys import maxsize
 from scipy.stats.mstats import mode
 
-################################ 
+################################
 # [*] Motion Interpretation    #
 ################################
 #   up-left    up   up-right   #
@@ -10,7 +10,8 @@ from scipy.stats.mstats import mode
 #     left 4   5   6 right     #
 #          1   2   3           #
 # down-left   down  down-right #
-################################ 
+################################
+
 
 
 DOWNLEFT   = 1
@@ -32,8 +33,8 @@ def interpreter(coord1, coord2):
     distance_of_vect = sqrt((x1-x2)**2+(y1-y2)**2)
     if x1 == x2 and y1 == y2:
         return STATIC  # two coordinates are the same.
-    elif  distance_of_vect < 5: 
-    # [*] the magnitude is too small 
+    elif  distance_of_vect < 5:
+    # [*] the magnitude is too small
     	return STATIC
     elif x1 == x2 and y1 > y2:
         return UP
@@ -76,3 +77,4 @@ def interpreter(coord1, coord2):
             return LEFT
         else:
             return DOWNLEFT
+

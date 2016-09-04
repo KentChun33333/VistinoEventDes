@@ -63,8 +63,6 @@ class Recog2Track():
         self.actionStr = "None"
         self.recogModels = mulRecog
 
-    def perform_IMG_analysis(self, img):
-        raw = img.copy()
         for model in self.recogModels:
             raw, tarBox = model.detect(raw)
             if len(tarBox)>0:
@@ -96,7 +94,7 @@ class Recog2Track():
         top_left = max_loc
         h , w, _ = refImg.shape
         bottom_right = (top_left[0]+w,top_left[1]+h)
-        
+
         cv2.rectangle(newImg, top_left, bottom_right, 255, 2)
         startX , startY = top_left[0], top_left[1]
         endX, endY = bottom_right
@@ -228,7 +226,7 @@ class Recog2Track():
                         #####################################
                         # if detected, than change the Flag #
                         #####################################
-                        self.trackingFlag[modelID]=0  
+                        self.trackingFlag[modelID]=0
                     NewImg = self.motion_feature_extraction(NewImg,self.position[modelID], modelID)
                     ################################################################################
 
@@ -302,7 +300,6 @@ def template_match_center_point(refImg, newImg, thresHold=0.88):
     cx = int(top_left[0]+0.5*w)
     cy = int(top_left[1]+0.5*h)
     return cx, cy
-
 '''
 @ MAC OS
 model_1 = HaarCV_Recognizor()

@@ -17,6 +17,11 @@ def ConfJSON():
 
 
 folderList = confJSON['folderList']
+###################################
+#
+#
+#
+#
 
 def TrainFilePath(folderList, constrain=None, **kargs ):
 	if constrain is None:
