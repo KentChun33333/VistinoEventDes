@@ -7,9 +7,9 @@ import imutils
 import cv2
 import motion_interpretation
 from scipy.stats.mstats import mode as statics_mode
-from motion_dictionary  import Motion_Dictionary
-from path_dictionary    import Path_DTW_Dictionary
-from gesture_dictionary import Gestrue_DTW_Dictionary
+from HUB_dictionary.motion_dictionary  import Motion_Dictionary
+from HUB_dictionary.path_dictionary    import Path_DTW_Dictionary
+from HUB_dictionary.gesture_dictionary import Gesture_DTW_Dictionary
 import fastdtw
 import time
 
@@ -17,7 +17,7 @@ def get_args():
     '''This function parses and return arguments passed in'''
     # Assign description to the help doc
     parser = argparse.ArgumentParser(
-        description=''' Script read both depth and rgb frames from kinetic 
+        description=''' Script read both depth and rgb frames from kinetic
         and save them in Assigned Folder''')
     # Add arguments
     parser.add_argument(
@@ -37,12 +37,12 @@ def sequence_container(inPut, seqLen):
 
 def red_finder(img):
     lowerBound = np.array([0,0,100])
-    upperBound = np.array([62,62,255])	
+    upperBound = np.array([62,62,255])
     # [*] Use RGB model
     mask = cv2.inRange(img, lowerBound, upperBound)
-    # [*] Mask already be binary_picture ..... 
+    # [*] Mask already be binary_picture .....
 
-    # [*] Turn Gray 
+    # [*] Turn Gray
     gray = cv2.cvtColor(mask, cv2.COLOR_BAYER_GB2GRAY)
     blurred=cv2.blur(gray,(5,5))
     # Set 200, more than 200 ---> asain to 255
@@ -61,18 +61,21 @@ def red_finder(img):
     return closed
 
 def find_coutur_record(img):
-	(_, cnts, _) = cv2.findContours(img.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-	# 
-	clone = img.copy()
-	cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:1]
-	cv2.drawContours(clone, cnts, -1, (0, 255, 0), 2)
-	cx = 0
-	cy = 0
-	if len(cnts)>0 :
-		M = cv2.moments(cnts[-1])
-		cx = int(M['m10']/M['m00'])
-		cy = int(M['m01']/M['m00'])
-	return clone,(cx,cy)
+    if int(cv2.__version__[0])==2:
+        (cnts, _) = cv2.findContours(img.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    else:
+        (_, cnts, _) = cv2.findContours(img.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    #
+    clone = img.copy()
+    cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:1]
+    cv2.drawContours(clone, cnts, -1, (0, 255, 0), 2)
+    cx = 0
+    cy = 0
+    if len(cnts)>0 :
+        M = cv2.moments(cnts[-1])
+        cx = int(M['m10']/M['m00'])
+        cy = int(M['m01']/M['m00'])
+    return clone,(cx,cy)
 
 def from_cnt_cental(cnts):
 	M = cv2.moments(cnts)
@@ -98,8 +101,8 @@ motionSeq = []
 motionLikehoodSeq = []
 Dictionary = Motion_Dictionary()
 PathDictionary = Path_DTW_Dictionary()
-#init 
-PathRegStr = "None" 
+#init
+PathRegStr = "None"
 # keep looping
 while True:
 	# grab the current frame
@@ -133,18 +136,18 @@ while True:
 			last_point = values[-1][1]
 			tmp_motion = motion_interpretation.interpreter(last_point,point)
 
-			# 
+			#
 			motionALL.append(tmp_motion) # this is all motion
 			motionSeq.append(tmp_motion) # this is time-segment motion
 			# Compute the max_Likelihood
 			motionSeq      = sequence_container(motionSeq,10)
 			motionLikehood = statics_mode(motionSeq)[0]
 			motionLikehoodSeq.append(motionLikehood)
-			
+
 			motionStr      = Dictionary.check(motionLikehood)
 
 			print motionStr
-			# %.2f = float with 2 dicimal 
+			# %.2f = float with 2 dicimal
 			cv2.putText(img_red_check, "The Hand is : %s" % (motionStr), (20, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.75, (255, 255, 255), 3)
 			if len(motionLikehoodSeq)>10:
 				# put it in small LSTM or RNN for NPL
@@ -159,7 +162,7 @@ while True:
 
 		# update the whole_value
 		values.append([numFrames,point])
-		
+
 		# [*] show the frame to our screen
 	##cv2.imshow("Frame", clone)
 	##cv2.imshow("red_finder", img_red)
