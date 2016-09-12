@@ -1,3 +1,17 @@
+from common_tool_agent.common_func import non_max_suppression
+from common_tool_agent.conf import Conf
+from common_tool_agent.descriptor_agent.hog import HOG
+from common_tool_agent.detect import ObjectDetector
+from sklearn.externals import joblib
+from skimage.io import imread
+from skimage.io import imshow as show
+from common_tool_agent.common_func import auto_resized
+import argparse 
+import numpy as np
+import cv2
+import os
+import imageio
+
 def main_testing():
     '''cd /Users/kentchiu/Night_Graden/Project/2016_MIT/Auto_HOG_SVM/'''
     from common_tool_agent.common_func import non_max_suppression
