@@ -6,7 +6,7 @@ from sklearn.externals import joblib
 from skimage.io import imread
 from common_func import auto_resized
 import progressbar
-import argparse 
+import argparse
 import cv2
 import os
 from datetime import datetime
@@ -32,14 +32,14 @@ def get_args():
 def hard_neg_extrect(conf,imgPath):
     '''gray_input image and str(fd.name)'''
     img = auto_resized(imread(imgPath, as_grey=True),conf['sliding_size'])
-    
+
     # if need , use below :
     # img = auto_resized(img ,conf['sliding_size'])
     from datetime import datetime
     from skimage.feature import hog as _hog
-    fd=_hog(img, conf['orientations'], conf['pixels_per_cell'], 
+    fd=_hog(img, conf['orientations'], conf['pixels_per_cell'],
                 conf['cells_per_block'], conf['visualize'], conf['normalize'])
-    
+
     fd_name = str(datetime.now()).split(':')[0].replace(' ','').replace('-','')
     fd_path = os.path.join(conf['neg_feat_ph'], fd_name)
     for i in range(2000):
@@ -51,6 +51,7 @@ def hard_neg_extrect_with_img(img,conf):
 def main():
     conf_path, hn_path = get_args()
     hard_neg_extrect(Conf(conf_path),hn_path)
+    return
 
 if __name__=="__main__":
     main()

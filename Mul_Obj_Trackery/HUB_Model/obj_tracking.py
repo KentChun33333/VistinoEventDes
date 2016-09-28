@@ -1,5 +1,5 @@
 import cv2
-import numpy as np 
+import numpy as np
 
 import imageio
 
@@ -13,20 +13,20 @@ class ObjectTracking:
 		pass
 
 '''
-Lucas-Kanade method computes optical flow for a sparse feature set 
-(in our example, corners detected using Shi-Tomasi algorithm). 
+Lucas-Kanade method computes optical flow for a sparse feature set
+(in our example, corners detected using Shi-Tomasi algorithm).
 
-OpenCV provides another algorithm to find the dense optical flow. 
-It computes the optical flow for all the points in the frame. 
+OpenCV provides another algorithm to find the dense optical flow.
+It computes the optical flow for all the points in the frame.
 
-It is based on Gunner Farnebacks algorithm which is explained in 
-"Two-Frame Motion Estimation Based on Polynomial Expansion" 
+It is based on Gunner Farnebacks algorithm which is explained in
+"Two-Frame Motion Estimation Based on Polynomial Expansion"
 by Gunner Farneback in 2003.
-Below sample shows how to find the dense optical flow using above algorithm. 
-We get a 2-channel array with optical flow vectors, (u,v). 
+Below sample shows how to find the dense optical flow using above algorithm.
+We get a 2-channel array with optical flow vectors, (u,v).
 
-We find their magnitude and direction. 
-We color code the result for better visualization. 
+We find their magnitude and direction.
+We color code the result for better visualization.
 
 Direction corresponds to Hue value of the image.
 Magnitude corresponds to Value plane.
@@ -108,11 +108,11 @@ def lk_shiTomasi(vid, startFrame, endFrame, frameBuff, result = []):
         frameID+=1
         frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         # calculate optical flow
-        p1, st, err = cv2.calcOpticalFlowPyrLK(old_gray, frame_gray, p0, None, **lk_params) 
+        p1, st, err = cv2.calcOpticalFlowPyrLK(old_gray, frame_gray, p0, None, **lk_params)
 
         # Select good points
         good_new = p1[st==1]
-        good_old = p0[st==1]    
+        good_old = p0[st==1]
 
         # draw the tracks
         for i,(new,old) in enumerate(zip(good_new,good_old)):
@@ -120,13 +120,13 @@ def lk_shiTomasi(vid, startFrame, endFrame, frameBuff, result = []):
             c,d = old.ravel()
             cv2.line(mask, (a,b),(c,d), color[i].tolist(), 2)
             cv2.circle(frame,(a,b),5,color[i].tolist(),-1)
-        img = cv2.add(frame,mask)   
+        img = cv2.add(frame,mask)
 
         cv2.imshow('frame',img)
         result.append(img)
         k = cv2.waitKey(30) & 0xff
         if k == 27:
-            break   
+            break
 
         # Now update the previous frame and previous points
         old_gray = frame_gray.copy()
@@ -149,9 +149,9 @@ def lk_shiTomasi(vid, startFrame, endFrame, frameBuff, result = []):
 
 
 
+'''
 
-
-def 
+def
 # params for ShiTomasi corner detection
 feature_params = dict( maxCorners = 100,
                        qualityLevel = 0.3,
@@ -210,3 +210,4 @@ while(frameID<maxFrame):
 
 cv2.destroyAllWindows()
 #cap.release()
+'''

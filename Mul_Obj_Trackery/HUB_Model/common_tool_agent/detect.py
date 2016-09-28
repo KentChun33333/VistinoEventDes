@@ -19,7 +19,7 @@ class ObjectDetector:
 
 			# loop over the sliding windows for the current pyramid layer
 			for (x, y, window) in common_func.sliding_window(layer, winStep, winDim):
-				
+
 				# grab the dimensions of the window
 				(winH, winW) = window.shape[:2]
 
