@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Mul_Obj_Trackery.HUB_Model.recog2track</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="Mul_Obj_Trackery-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >ame</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="Mul_Obj_Trackery-module.html">Package&nbsp;Mul_Obj_Trackery</a> ::
+        <a href="Mul_Obj_Trackery.HUB_Model-module.html">Package&nbsp;HUB_Model</a> ::
+        Module&nbsp;recog2track
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="Mul_Obj_Trackery.HUB_Model.recog2track-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="Mul_Obj_Trackery.HUB_Model.recog2track-module.html">Module Mul_Obj_Trackery.HUB_Model.recog2track</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno">  1</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">np</tt> </tt>
+<a name="L2"></a><tt class="py-lineno">  2</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">argparse</tt> </tt>
+<a name="L3"></a><tt class="py-lineno">  3</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">imutils</tt> </tt>
+<a name="L4"></a><tt class="py-lineno">  4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">cv2</tt> </tt>
+<a name="L5"></a><tt class="py-lineno">  5</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt id="link-0" class="py-name" targets="Module Mul_Obj_Trackery.motion_interpretation=Mul_Obj_Trackery.motion_interpretation-module.html"><a title="Mul_Obj_Trackery.motion_interpretation" class="py-name" href="#" onclick="return doclink('link-0', 'motion_interpretation', 'link-0');">motion_interpretation</a></tt> </tt>
+<a name="L6"></a><tt class="py-lineno">  6</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">scipy</tt><tt class="py-op">.</tt><tt class="py-name">stats</tt><tt class="py-op">.</tt><tt class="py-name">mstats</tt> <tt class="py-keyword">import</tt> <tt class="py-name">mode</tt> <tt class="py-keyword">as</tt> <tt class="py-name">statics_mode</tt> </tt>
+<a name="L7"></a><tt class="py-lineno">  7</tt>  <tt class="py-line"> </tt>
+<a name="L8"></a><tt class="py-lineno">  8</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-1" class="py-name" targets="Package Mul_Obj_Trackery.HUB_dictionary=Mul_Obj_Trackery.HUB_dictionary-module.html"><a title="Mul_Obj_Trackery.HUB_dictionary" class="py-name" href="#" onclick="return doclink('link-1', 'HUB_dictionary', 'link-1');">HUB_dictionary</a></tt><tt class="py-op">.</tt><tt id="link-2" class="py-name" targets="Module Mul_Obj_Trackery.HUB_dictionary.motion_dictionary=Mul_Obj_Trackery.HUB_dictionary.motion_dictionary-module.html"><a title="Mul_Obj_Trackery.HUB_dictionary.motion_dictionary" class="py-name" href="#" onclick="return doclink('link-2', 'motion_dictionary', 'link-2');">motion_dictionary</a></tt>  <tt class="py-keyword">import</tt> <tt id="link-3" class="py-name" targets="Class Mul_Obj_Trackery.HUB_dictionary.motion_dictionary.Motion_Dictionary=Mul_Obj_Trackery.HUB_dictionary.motion_dictionary.Motion_Dictionary-class.html"><a title="Mul_Obj_Trackery.HUB_dictionary.motion_dictionary.Motion_Dictionary" class="py-name" href="#" onclick="return doclink('link-3', 'Motion_Dictionary', 'link-3');">Motion_Dictionary</a></tt> </tt>
+<a name="L9"></a><tt class="py-lineno">  9</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-4" class="py-name"><a title="Mul_Obj_Trackery.HUB_dictionary" class="py-name" href="#" onclick="return doclink('link-4', 'HUB_dictionary', 'link-1');">HUB_dictionary</a></tt><tt class="py-op">.</tt><tt id="link-5" class="py-name" targets="Module Mul_Obj_Trackery.HUB_dictionary.path_dictionary=Mul_Obj_Trackery.HUB_dictionary.path_dictionary-module.html"><a title="Mul_Obj_Trackery.HUB_dictionary.path_dictionary" class="py-name" href="#" onclick="return doclink('link-5', 'path_dictionary', 'link-5');">path_dictionary</a></tt>    <tt class="py-keyword">import</tt> <tt id="link-6" class="py-name" targets="Class Mul_Obj_Trackery.HUB_dictionary.path_dictionary.Path_DTW_Dictionary=Mul_Obj_Trackery.HUB_dictionary.path_dictionary.Path_DTW_Dictionary-class.html"><a title="Mul_Obj_Trackery.HUB_dictionary.path_dictionary.Path_DTW_Dictionary" class="py-name" href="#" onclick="return doclink('link-6', 'Path_DTW_Dictionary', 'link-6');">Path_DTW_Dictionary</a></tt> </tt>
+<a name="L10"></a><tt class="py-lineno"> 10</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt id="link-7" class="py-name"><a title="Mul_Obj_Trackery.HUB_dictionary" class="py-name" href="#" onclick="return doclink('link-7', 'HUB_dictionary', 'link-1');">HUB_dictionary</a></tt><tt class="py-op">.</tt><tt id="link-8" class="py-name" targets="Module Mul_Obj_Trackery.HUB_dictionary.gesture_dictionary=Mul_Obj_Trackery.HUB_dictionary.gesture_dictionary-module.html"><a title="Mul_Obj_Trackery.HUB_dictionary.gesture_dictionary" class="py-name" href="#" onclick="return doclink('link-8', 'gesture_dictionary', 'link-8');">gesture_dictionary</a></tt> <tt class="py-keyword">import</tt> <tt class="py-name">Gestrue_DTW_Dictionary</tt> </tt>
+<a name="L11"></a><tt class="py-lineno"> 11</tt>  <tt class="py-line"> </tt>
+<a name="L12"></a><tt class="py-lineno"> 12</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">time</tt> </tt>
+<a name="L13"></a><tt class="py-lineno"> 13</tt>  <tt class="py-line"> </tt>
+<a name="L14"></a><tt class="py-lineno"> 14</tt>  <tt class="py-line"> </tt>
+<a name="L15"></a><tt class="py-lineno"> 15</tt>  <tt class="py-line"> </tt>
+<a name="L16"></a><tt class="py-lineno"> 16</tt>  <tt class="py-line"><tt class="py-comment"># Get the varoable from command line</tt> </tt>
+<a name="L17"></a><tt class="py-lineno"> 17</tt>  <tt class="py-line"><tt id="link-9" class="py-name" targets="Variable Mul_Obj_Trackery.HUB_Model.recog2track.folder_name=Mul_Obj_Trackery.HUB_Model.recog2track-module.html#folder_name,Variable Mul_Obj_Trackery.main.folder_name=Mul_Obj_Trackery.main-module.html#folder_name"><a title="Mul_Obj_Trackery.HUB_Model.recog2track.folder_name
+Mul_Obj_Trackery.main.folder_name" class="py-name" href="#" onclick="return doclink('link-9', 'folder_name', 'link-9');">folder_name</a></tt><tt class="py-op">=</tt><tt id="link-10" class="py-name" targets="Function Mul_Obj_Trackery.HUB_Model.common_tool_agent.hard_n_feat.get_args()=Mul_Obj_Trackery.HUB_Model.common_tool_agent.hard_n_feat-module.html#get_args,Function Mul_Obj_Trackery.HUB_Model.common_tool_agent.n_feat.get_args()=Mul_Obj_Trackery.HUB_Model.common_tool_agent.n_feat-module.html#get_args,Function Mul_Obj_Trackery.HUB_Model.common_tool_agent.p_feat.get_args()=Mul_Obj_Trackery.HUB_Model.common_tool_agent.p_feat-module.html#get_args,Function Mul_Obj_Trackery.HUB_Model.common_tool_agent.train_svm.get_args()=Mul_Obj_Trackery.HUB_Model.common_tool_agent.train_svm-module.html#get_args,Function Mul_Obj_Trackery.main.get_args()=Mul_Obj_Trackery.main-module.html#get_args,Function Mul_Obj_Trackery.script_hand_webcam_motion.get_args()=Mul_Obj_Trackery.script_hand_webcam_motion-module.html#get_args"><a title="Mul_Obj_Trackery.HUB_Model.common_tool_agent.hard_n_feat.get_args
+Mul_Obj_Trackery.HUB_Model.common_tool_agent.n_feat.get_args
+Mul_Obj_Trackery.HUB_Model.common_tool_agent.p_feat.get_args
+Mul_Obj_Trackery.HUB_Model.common_tool_agent.train_svm.get_args
+Mul_Obj_Trackery.main.get_args
+Mul_Obj_Trackery.script_hand_webcam_motion.get_args" class="py-name" href="#" onclick="return doclink('link-10', 'get_args', 'link-10');">get_args</a></tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L18"></a><tt class="py-lineno"> 18</tt>  <tt class="py-line"> </tt>
+<a name="L19"></a><tt class="py-lineno"> 19</tt>  <tt class="py-line"><tt id="link-11" class="py-name" targets="Variable Mul_Obj_Trackery.HUB_Model.recog2track.camera=Mul_Obj_Trackery.HUB_Model.recog2track-module.html#camera,Variable Mul_Obj_Trackery.detect.camera=Mul_Obj_Trackery.detect-module.html#camera,Variable Mul_Obj_Trackery.main.camera=Mul_Obj_Trackery.main-module.html#camera,Variable Mul_Obj_Trackery.recognize.camera=Mul_Obj_Trackery.recognize-module.html#camera"><a title="Mul_Obj_Trackery.HUB_Model.recog2track.camera
+Mul_Obj_Trackery.detect.camera
+Mul_Obj_Trackery.main.camera
+Mul_Obj_Trackery.recognize.camera" class="py-name" href="#" onclick="return doclink('link-11', 'camera', 'link-11');">camera</a></tt> <tt class="py-op">=</tt> <tt class="py-name">cv2</tt><tt class="py-op">.</tt><tt class="py-name">VideoCapture</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L20"></a><tt class="py-lineno"> 20</tt>  <tt class="py-line"> </tt>
+<a name="L21"></a><tt class="py-lineno"> 21</tt>  <tt class="py-line"><tt class="py-comment"># keep looping</tt> </tt>
+<a name="L22"></a><tt class="py-lineno"> 22</tt>  <tt class="py-line"><tt class="py-keyword">while</tt> <tt class="py-name">True</tt><tt class="py-op">:</tt> </tt>
+<a name="L23"></a><tt class="py-lineno"> 23</tt>  <tt class="py-line">        <tt class="py-comment"># grab the current frame</tt> </tt>
+<a name="L24"></a><tt class="py-lineno"> 24</tt>  <tt class="py-line">        <tt class="py-op">(</tt><tt class="py-name">grabbed</tt><tt class="py-op">,</tt> <tt id="link-12" class="py-name" targets="Variable Mul_Obj_Trackery.script_hand_webcam_motion.frame=Mul_Obj_Trackery.script_hand_webcam_motion-module.html#frame"><a title="Mul_Obj_Trackery.script_hand_webcam_motion.frame" class="py-name" href="#" onclick="return doclink('link-12', 'frame', 'link-12');">frame</a></tt><tt class="py-op">)</tt> <tt class="py-op">=</tt> <tt id="link-13" class="py-name"><a title="Mul_Obj_Trackery.HUB_Model.recog2track.camera
+Mul_Obj_Trackery.detect.camera
+Mul_Obj_Trackery.main.camera
+Mul_Obj_Trackery.recognize.camera" class="py-name" href="#" onclick="return doclink('link-13', 'camera', 'link-11');">camera</a></tt><tt class="py-op">.</tt><tt class="py-name">read</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L25"></a><tt class="py-lineno"> 25</tt>  <tt class="py-line">        <tt class="py-comment"># resize the frame and flip it so the frame is no longer a mirror view</tt> </tt>
+<a name="L26"></a><tt class="py-lineno"> 26</tt>  <tt class="py-line">        <tt id="link-14" class="py-name"><a title="Mul_Obj_Trackery.script_hand_webcam_motion.frame" class="py-name" href="#" onclick="return doclink('link-14', 'frame', 'link-12');">frame</a></tt> <tt class="py-op">=</tt> <tt class="py-name">imutils</tt><tt class="py-op">.</tt><tt class="py-name">resize</tt><tt class="py-op">(</tt><tt id="link-15" class="py-name"><a title="Mul_Obj_Trackery.script_hand_webcam_motion.frame" class="py-name" href="#" onclick="return doclink('link-15', 'frame', 'link-12');">frame</a></tt><tt class="py-op">,</tt> <tt class="py-name">width</tt><tt class="py-op">=</tt><tt class="py-number">600</tt><tt class="py-op">)</tt> </tt>
+<a name="L27"></a><tt class="py-lineno"> 27</tt>  <tt class="py-line">        <tt id="link-16" class="py-name"><a title="Mul_Obj_Trackery.script_hand_webcam_motion.frame" class="py-name" href="#" onclick="return doclink('link-16', 'frame', 'link-12');">frame</a></tt> <tt class="py-op">=</tt> <tt class="py-name">cv2</tt><tt class="py-op">.</tt><tt class="py-name">flip</tt><tt class="py-op">(</tt><tt id="link-17" class="py-name"><a title="Mul_Obj_Trackery.script_hand_webcam_motion.frame" class="py-name" href="#" onclick="return doclink('link-17', 'frame', 'link-12');">frame</a></tt><tt class="py-op">,</tt> <tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+<a name="L28"></a><tt class="py-lineno"> 28</tt>  <tt class="py-line">        <tt class="py-name">clone</tt> <tt class="py-op">=</tt> <tt id="link-18" class="py-name"><a title="Mul_Obj_Trackery.script_hand_webcam_motion.frame" class="py-name" href="#" onclick="return doclink('link-18', 'frame', 'link-12');">frame</a></tt><tt class="py-op">.</tt><tt class="py-name">copy</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L29"></a><tt class="py-lineno"> 29</tt>  <tt class="py-line">        <tt class="py-op">(</tt><tt class="py-name">frameH</tt><tt class="py-op">,</tt> <tt class="py-name">frameW</tt><tt class="py-op">)</tt> <tt class="py-op">=</tt> <tt id="link-19" class="py-name"><a title="Mul_Obj_Trackery.script_hand_webcam_motion.frame" class="py-name" href="#" onclick="return doclink('link-19', 'frame', 'link-12');">frame</a></tt><tt class="py-op">.</tt><tt class="py-name">shape</tt><tt class="py-op">[</tt><tt class="py-op">:</tt><tt class="py-number">2</tt><tt class="py-op">]</tt> </tt>
+<a name="L30"></a><tt class="py-lineno"> 30</tt>  <tt class="py-line"> </tt>
+<a name="L31"></a><tt class="py-lineno"> 31</tt>  <tt class="py-line">        <tt class="py-comment"># extract the ROI, passing in right:left since the image is mirrored, then</tt> </tt>
+<a name="L32"></a><tt class="py-lineno"> 32</tt>  <tt class="py-line">        <tt class="py-comment"># blur it slightly</tt> </tt>
+<a name="L33"></a><tt class="py-lineno"> 33</tt>  <tt class="py-line">        <tt class="py-name">roi</tt> <tt class="py-op">=</tt> <tt id="link-20" class="py-name"><a title="Mul_Obj_Trackery.script_hand_webcam_motion.frame" class="py-name" href="#" onclick="return doclink('link-20', 'frame', 'link-12');">frame</a></tt><tt class="py-comment">#[top:bot, right:left]</tt> </tt>
+<a name="L34"></a><tt class="py-lineno"> 34</tt>  <tt class="py-line">        <tt class="py-comment">#-------------------------------------#</tt> </tt>
+<a name="L35"></a><tt class="py-lineno"> 35</tt>  <tt class="py-line">        <tt class="py-comment"># Recognition or Tracking or Matching #</tt> </tt>
+<a name="L36"></a><tt class="py-lineno"> 36</tt>  <tt class="py-line">        <tt class="py-comment">#-------------------------------------#</tt> </tt>
+<a name="L37"></a><tt class="py-lineno"> 37</tt>  <tt class="py-line"> </tt>
+<a name="L38"></a><tt class="py-lineno"> 38</tt>  <tt class="py-line">        <tt class="py-name">gray</tt> <tt class="py-op">=</tt> <tt class="py-name">cv2</tt><tt class="py-op">.</tt><tt class="py-name">cvtColor</tt><tt class="py-op">(</tt><tt class="py-name">roi</tt><tt class="py-op">,</tt> <tt class="py-name">cv2</tt><tt class="py-op">.</tt><tt class="py-name">COLOR_BGR2GRAY</tt><tt class="py-op">)</tt> </tt>
+<a name="L39"></a><tt class="py-lineno"> 39</tt>  <tt class="py-line">        <tt class="py-name">gray</tt> <tt class="py-op">=</tt> <tt class="py-name">cv2</tt><tt class="py-op">.</tt><tt class="py-name">GaussianBlur</tt><tt class="py-op">(</tt><tt class="py-name">gray</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">5</tt><tt class="py-op">,</tt> <tt class="py-number">5</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-number">0</tt><tt class="py-op">)</tt> </tt>
+<a name="L40"></a><tt class="py-lineno"> 40</tt>  <tt class="py-line"> </tt>
+<a name="L41"></a><tt class="py-lineno"> 41</tt>  <tt class="py-line">        <tt class="py-name">img_red</tt> <tt class="py-op">=</tt> <tt id="link-21" class="py-name" targets="Function Mul_Obj_Trackery.main.red_finder()=Mul_Obj_Trackery.main-module.html#red_finder"><a title="Mul_Obj_Trackery.main.red_finder" class="py-name" href="#" onclick="return doclink('link-21', 'red_finder', 'link-21');">red_finder</a></tt><tt class="py-op">(</tt><tt id="link-22" class="py-name"><a title="Mul_Obj_Trackery.script_hand_webcam_motion.frame" class="py-name" href="#" onclick="return doclink('link-22', 'frame', 'link-12');">frame</a></tt><tt class="py-op">)</tt> </tt>
+<a name="L42"></a><tt class="py-lineno"> 42</tt>  <tt class="py-line">        <tt class="py-name">img_red_check</tt><tt class="py-op">,</tt> <tt class="py-name">point</tt> <tt class="py-op">=</tt> <tt id="link-23" class="py-name" targets="Function Mul_Obj_Trackery.main.find_coutur_record()=Mul_Obj_Trackery.main-module.html#find_coutur_record"><a title="Mul_Obj_Trackery.main.find_coutur_record" class="py-name" href="#" onclick="return doclink('link-23', 'find_coutur_record', 'link-23');">find_coutur_record</a></tt><tt class="py-op">(</tt><tt class="py-name">img_red</tt><tt class="py-op">)</tt> </tt>
+<a name="L43"></a><tt class="py-lineno"> 43</tt>  <tt class="py-line"> </tt>
+<a name="L44"></a><tt class="py-lineno"> 44</tt>  <tt class="py-line">        <tt class="py-comment">#------------------------#</tt> </tt>
+<a name="L45"></a><tt class="py-lineno"> 45</tt>  <tt class="py-line">        <tt class="py-comment"># After point extraction #</tt> </tt>
+<a name="L46"></a><tt class="py-lineno"> 46</tt>  <tt class="py-line">        <tt class="py-comment">#------------------------#</tt> </tt>
+<a name="L47"></a><tt class="py-lineno"> 47</tt>  <tt class="py-line">        <tt class="py-comment"># print point</tt> </tt>
+<a name="L48"></a><tt class="py-lineno"> 48</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">point</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> <tt class="py-op">!=</tt> <tt class="py-number">0</tt> <tt class="py-keyword">and</tt> <tt class="py-name">point</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> <tt class="py-op">!=</tt> <tt class="py-number">0</tt><tt class="py-op">:</tt> </tt>
+<a name="L49"></a><tt class="py-lineno"> 49</tt>  <tt class="py-line">        <tt class="py-comment"># process motion.interpreter</tt> </tt>
+<a name="L50"></a><tt class="py-lineno"> 50</tt>  <tt class="py-line">                <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt id="link-24" class="py-name" targets="Variable Mul_Obj_Trackery.main.values=Mul_Obj_Trackery.main-module.html#values,Variable Mul_Obj_Trackery.recognize.values=Mul_Obj_Trackery.recognize-module.html#values"><a title="Mul_Obj_Trackery.main.values
+Mul_Obj_Trackery.recognize.values" class="py-name" href="#" onclick="return doclink('link-24', 'values', 'link-24');">values</a></tt><tt class="py-op">)</tt><tt class="py-op">&gt;</tt><tt class="py-number">2</tt><tt class="py-op">:</tt> </tt>
+<a name="L51"></a><tt class="py-lineno"> 51</tt>  <tt class="py-line">                        <tt class="py-name">last_point</tt> <tt class="py-op">=</tt> <tt id="link-25" class="py-name"><a title="Mul_Obj_Trackery.main.values
+Mul_Obj_Trackery.recognize.values" class="py-name" href="#" onclick="return doclink('link-25', 'values', 'link-24');">values</a></tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">]</tt><tt class="py-op">[</tt><tt class="py-number">1</tt><tt class="py-op">]</tt> </tt>
+<a name="L52"></a><tt class="py-lineno"> 52</tt>  <tt class="py-line">                        <tt class="py-name">tmp_motion</tt> <tt class="py-op">=</tt> <tt id="link-26" class="py-name"><a title="Mul_Obj_Trackery.motion_interpretation" class="py-name" href="#" onclick="return doclink('link-26', 'motion_interpretation', 'link-0');">motion_interpretation</a></tt><tt class="py-op">.</tt><tt id="link-27" class="py-name" targets="Function Mul_Obj_Trackery.motion_interpretation.interpreter()=Mul_Obj_Trackery.motion_interpretation-module.html#interpreter"><a title="Mul_Obj_Trackery.motion_interpretation.interpreter" class="py-name" href="#" onclick="return doclink('link-27', 'interpreter', 'link-27');">interpreter</a></tt><tt class="py-op">(</tt><tt class="py-name">last_point</tt><tt class="py-op">,</tt><tt class="py-name">point</tt><tt class="py-op">)</tt> </tt>
+<a name="L53"></a><tt class="py-lineno"> 53</tt>  <tt class="py-line"> </tt>
+<a name="L54"></a><tt class="py-lineno"> 54</tt>  <tt class="py-line">                        <tt class="py-comment"># </tt> </tt>
+<a name="L55"></a><tt class="py-lineno"> 55</tt>  <tt class="py-line">                        <tt id="link-28" class="py-name" targets="Variable Mul_Obj_Trackery.main.motionALL=Mul_Obj_Trackery.main-module.html#motionALL"><a title="Mul_Obj_Trackery.main.motionALL" class="py-name" href="#" onclick="return doclink('link-28', 'motionALL', 'link-28');">motionALL</a></tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">tmp_motion</tt><tt class="py-op">)</tt> <tt class="py-comment"># this is all motion</tt> </tt>
+<a name="L56"></a><tt class="py-lineno"> 56</tt>  <tt class="py-line">                        <tt id="link-29" class="py-name" targets="Variable Mul_Obj_Trackery.main.motionSeq=Mul_Obj_Trackery.main-module.html#motionSeq"><a title="Mul_Obj_Trackery.main.motionSeq" class="py-name" href="#" onclick="return doclink('link-29', 'motionSeq', 'link-29');">motionSeq</a></tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">tmp_motion</tt><tt class="py-op">)</tt> <tt class="py-comment"># this is time-segment motion</tt> </tt>
+<a name="L57"></a><tt class="py-lineno"> 57</tt>  <tt class="py-line">                        <tt class="py-comment"># Compute the max_Likelihood</tt> </tt>
+<a name="L58"></a><tt class="py-lineno"> 58</tt>  <tt class="py-line">                        <tt id="link-30" class="py-name"><a title="Mul_Obj_Trackery.main.motionSeq" class="py-name" href="#" onclick="return doclink('link-30', 'motionSeq', 'link-29');">motionSeq</a></tt>      <tt class="py-op">=</tt> <tt id="link-31" class="py-name" targets="Function Mul_Obj_Trackery.main.sequence_container()=Mul_Obj_Trackery.main-module.html#sequence_container"><a title="Mul_Obj_Trackery.main.sequence_container" class="py-name" href="#" onclick="return doclink('link-31', 'sequence_container', 'link-31');">sequence_container</a></tt><tt class="py-op">(</tt><tt id="link-32" class="py-name"><a title="Mul_Obj_Trackery.main.motionSeq" class="py-name" href="#" onclick="return doclink('link-32', 'motionSeq', 'link-29');">motionSeq</a></tt><tt class="py-op">,</tt><tt class="py-number">10</tt><tt class="py-op">)</tt> </tt>
+<a name="L59"></a><tt class="py-lineno"> 59</tt>  <tt class="py-line">                        <tt class="py-name">motionLikehood</tt> <tt class="py-op">=</tt> <tt class="py-name">statics_mode</tt><tt class="py-op">(</tt><tt id="link-33" class="py-name"><a title="Mul_Obj_Trackery.main.motionSeq" class="py-name" href="#" onclick="return doclink('link-33', 'motionSeq', 'link-29');">motionSeq</a></tt><tt class="py-op">)</tt><tt class="py-op">[</tt><tt class="py-number">0</tt><tt class="py-op">]</tt> </tt>
+<a name="L60"></a><tt class="py-lineno"> 60</tt>  <tt class="py-line">                        <tt id="link-34" class="py-name" targets="Variable Mul_Obj_Trackery.main.motionLikehoodSeq=Mul_Obj_Trackery.main-module.html#motionLikehoodSeq"><a title="Mul_Obj_Trackery.main.motionLikehoodSeq" class="py-name" href="#" onclick="return doclink('link-34', 'motionLikehoodSeq', 'link-34');">motionLikehoodSeq</a></tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-name">motionLikehood</tt><tt class="py-op">)</tt> </tt>
+<a name="L61"></a><tt class="py-lineno"> 61</tt>  <tt class="py-line">                         </tt>
+<a name="L62"></a><tt class="py-lineno"> 62</tt>  <tt class="py-line">                        <tt class="py-name">motionStr</tt>      <tt class="py-op">=</tt> <tt id="link-35" class="py-name" targets="Variable Mul_Obj_Trackery.main.Dictionary=Mul_Obj_Trackery.main-module.html#Dictionary"><a title="Mul_Obj_Trackery.main.Dictionary" class="py-name" href="#" onclick="return doclink('link-35', 'Dictionary', 'link-35');">Dictionary</a></tt><tt class="py-op">.</tt><tt id="link-36" class="py-name" targets="Method Mul_Obj_Trackery.HUB_dictionary.motion_dictionary.Motion_3D_Dictionary.check()=Mul_Obj_Trackery.HUB_dictionary.motion_dictionary.Motion_3D_Dictionary-class.html#check,Method Mul_Obj_Trackery.HUB_dictionary.motion_dictionary.Motion_Dictionary.check()=Mul_Obj_Trackery.HUB_dictionary.motion_dictionary.Motion_Dictionary-class.html#check"><a title="Mul_Obj_Trackery.HUB_dictionary.motion_dictionary.Motion_3D_Dictionary.check
+Mul_Obj_Trackery.HUB_dictionary.motion_dictionary.Motion_Dictionary.check" class="py-name" href="#" onclick="return doclink('link-36', 'check', 'link-36');">check</a></tt><tt class="py-op">(</tt><tt class="py-name">motionLikehood</tt><tt class="py-op">)</tt> </tt>
+<a name="L63"></a><tt class="py-lineno"> 63</tt>  <tt class="py-line"> </tt>
+<a name="L64"></a><tt class="py-lineno"> 64</tt>  <tt class="py-line">                        <tt class="py-keyword">print</tt> <tt class="py-name">motionStr</tt> </tt>
+<a name="L65"></a><tt class="py-lineno"> 65</tt>  <tt class="py-line">                        <tt class="py-comment"># %.2f = float with 2 dicimal </tt> </tt>
+<a name="L66"></a><tt class="py-lineno"> 66</tt>  <tt class="py-line">                        <tt class="py-name">cv2</tt><tt class="py-op">.</tt><tt class="py-name">putText</tt><tt class="py-op">(</tt><tt class="py-name">img_red_check</tt><tt class="py-op">,</tt> <tt class="py-string">"The Hand is : %s"</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt class="py-name">motionStr</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">20</tt><tt class="py-op">,</tt> <tt class="py-number">20</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">cv2</tt><tt class="py-op">.</tt><tt class="py-name">FONT_HERSHEY_SIMPLEX</tt><tt class="py-op">,</tt> <tt class="py-number">0.75</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">255</tt><tt class="py-op">,</tt> <tt class="py-number">255</tt><tt class="py-op">,</tt> <tt class="py-number">255</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-number">3</tt><tt class="py-op">)</tt> </tt>
+<a name="L67"></a><tt class="py-lineno"> 67</tt>  <tt class="py-line">                        <tt class="py-keyword">if</tt> <tt class="py-name">len</tt><tt class="py-op">(</tt><tt id="link-37" class="py-name"><a title="Mul_Obj_Trackery.main.motionLikehoodSeq" class="py-name" href="#" onclick="return doclink('link-37', 'motionLikehoodSeq', 'link-34');">motionLikehoodSeq</a></tt><tt class="py-op">)</tt><tt class="py-op">&gt;</tt><tt class="py-number">10</tt><tt class="py-op">:</tt> </tt>
+<a name="L68"></a><tt class="py-lineno"> 68</tt>  <tt class="py-line">                                <tt class="py-comment"># put it in small LSTM or RNN for NPL</tt> </tt>
+<a name="L69"></a><tt class="py-lineno"> 69</tt>  <tt class="py-line">                                <tt class="py-comment"># put it into DTW search/match</tt> </tt>
+<a name="L70"></a><tt class="py-lineno"> 70</tt>  <tt class="py-line">                                <tt id="link-38" class="py-name"><a title="Mul_Obj_Trackery.main.motionLikehoodSeq" class="py-name" href="#" onclick="return doclink('link-38', 'motionLikehoodSeq', 'link-34');">motionLikehoodSeq</a></tt> <tt class="py-op">=</tt> <tt id="link-39" class="py-name"><a title="Mul_Obj_Trackery.main.sequence_container" class="py-name" href="#" onclick="return doclink('link-39', 'sequence_container', 'link-31');">sequence_container</a></tt><tt class="py-op">(</tt><tt id="link-40" class="py-name"><a title="Mul_Obj_Trackery.main.motionLikehoodSeq" class="py-name" href="#" onclick="return doclink('link-40', 'motionLikehoodSeq', 'link-34');">motionLikehoodSeq</a></tt><tt class="py-op">,</tt><tt class="py-number">10</tt><tt class="py-op">)</tt> </tt>
+<a name="L71"></a><tt class="py-lineno"> 71</tt>  <tt class="py-line">                                <tt class="py-name">PathRegStr_tmp</tt> <tt class="py-op">=</tt> <tt id="link-41" class="py-name" targets="Variable Mul_Obj_Trackery.main.PathDictionary=Mul_Obj_Trackery.main-module.html#PathDictionary"><a title="Mul_Obj_Trackery.main.PathDictionary" class="py-name" href="#" onclick="return doclink('link-41', 'PathDictionary', 'link-41');">PathDictionary</a></tt><tt class="py-op">.</tt><tt id="link-42" class="py-name" targets="Method Mul_Obj_Trackery.HUB_dictionary.gesture_dictionary.Gesture_DTW_Dictionary.search()=Mul_Obj_Trackery.HUB_dictionary.gesture_dictionary.Gesture_DTW_Dictionary-class.html#search,Method Mul_Obj_Trackery.HUB_dictionary.path_dictionary.Path_DTW_Dictionary.search()=Mul_Obj_Trackery.HUB_dictionary.path_dictionary.Path_DTW_Dictionary-class.html#search"><a title="Mul_Obj_Trackery.HUB_dictionary.gesture_dictionary.Gesture_DTW_Dictionary.search
+Mul_Obj_Trackery.HUB_dictionary.path_dictionary.Path_DTW_Dictionary.search" class="py-name" href="#" onclick="return doclink('link-42', 'search', 'link-42');">search</a></tt><tt class="py-op">(</tt><tt id="link-43" class="py-name"><a title="Mul_Obj_Trackery.main.motionLikehoodSeq" class="py-name" href="#" onclick="return doclink('link-43', 'motionLikehoodSeq', 'link-34');">motionLikehoodSeq</a></tt><tt class="py-op">[</tt><tt class="py-op">-</tt><tt class="py-number">8</tt><tt class="py-op">:</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L72"></a><tt class="py-lineno"> 72</tt>  <tt class="py-line">                                <tt class="py-keyword">if</tt> <tt class="py-name">PathRegStr_tmp</tt> <tt class="py-op">==</tt> <tt class="py-string">'None'</tt><tt class="py-op">:</tt> </tt>
+<a name="L73"></a><tt class="py-lineno"> 73</tt>  <tt class="py-line">                                        <tt class="py-keyword">pass</tt> </tt>
+<a name="L74"></a><tt class="py-lineno"> 74</tt>  <tt class="py-line">                                <tt class="py-keyword">else</tt><tt class="py-op">:</tt> </tt>
+<a name="L75"></a><tt class="py-lineno"> 75</tt>  <tt class="py-line">                                        <tt id="link-44" class="py-name" targets="Variable Mul_Obj_Trackery.main.PathRegStr=Mul_Obj_Trackery.main-module.html#PathRegStr"><a title="Mul_Obj_Trackery.main.PathRegStr" class="py-name" href="#" onclick="return doclink('link-44', 'PathRegStr', 'link-44');">PathRegStr</a></tt> <tt class="py-op">=</tt> <tt class="py-name">PathRegStr_tmp</tt> </tt>
+<a name="L76"></a><tt class="py-lineno"> 76</tt>  <tt class="py-line">                                <tt class="py-keyword">pass</tt> <tt class="py-comment"># do some 3rd Recognition</tt> </tt>
+<a name="L77"></a><tt class="py-lineno"> 77</tt>  <tt class="py-line"> </tt>
+<a name="L78"></a><tt class="py-lineno"> 78</tt>  <tt class="py-line">                <tt class="py-comment"># update the whole_value</tt> </tt>
+<a name="L79"></a><tt class="py-lineno"> 79</tt>  <tt class="py-line">                <tt id="link-45" class="py-name"><a title="Mul_Obj_Trackery.main.values
+Mul_Obj_Trackery.recognize.values" class="py-name" href="#" onclick="return doclink('link-45', 'values', 'link-24');">values</a></tt><tt class="py-op">.</tt><tt class="py-name">append</tt><tt class="py-op">(</tt><tt class="py-op">[</tt><tt id="link-46" class="py-name" targets="Variable Mul_Obj_Trackery.detect.numFrames=Mul_Obj_Trackery.detect-module.html#numFrames,Variable Mul_Obj_Trackery.main.numFrames=Mul_Obj_Trackery.main-module.html#numFrames,Variable Mul_Obj_Trackery.recognize.numFrames=Mul_Obj_Trackery.recognize-module.html#numFrames"><a title="Mul_Obj_Trackery.detect.numFrames
+Mul_Obj_Trackery.main.numFrames
+Mul_Obj_Trackery.recognize.numFrames" class="py-name" href="#" onclick="return doclink('link-46', 'numFrames', 'link-46');">numFrames</a></tt><tt class="py-op">,</tt><tt class="py-name">point</tt><tt class="py-op">]</tt><tt class="py-op">)</tt> </tt>
+<a name="L80"></a><tt class="py-lineno"> 80</tt>  <tt class="py-line">                 </tt>
+<a name="L81"></a><tt class="py-lineno"> 81</tt>  <tt class="py-line">                <tt class="py-comment"># [*] show the frame to our screen</tt> </tt>
+<a name="L82"></a><tt class="py-lineno"> 82</tt>  <tt class="py-line">        <tt class="py-comment">##cv2.imshow("Frame", clone)</tt> </tt>
+<a name="L83"></a><tt class="py-lineno"> 83</tt>  <tt class="py-line">        <tt class="py-comment">##cv2.imshow("red_finder", img_red)</tt> </tt>
+<a name="L84"></a><tt class="py-lineno"> 84</tt>  <tt class="py-line">        <tt class="py-name">cv2</tt><tt class="py-op">.</tt><tt class="py-name">putText</tt><tt class="py-op">(</tt><tt class="py-name">img_red_check</tt><tt class="py-op">,</tt> <tt class="py-string">"Last Path-Recog. : %s"</tt> <tt class="py-op">%</tt> <tt class="py-op">(</tt><tt id="link-47" class="py-name"><a title="Mul_Obj_Trackery.main.PathRegStr" class="py-name" href="#" onclick="return doclink('link-47', 'PathRegStr', 'link-44');">PathRegStr</a></tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">20</tt><tt class="py-op">,</tt> <tt class="py-number">40</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-name">cv2</tt><tt class="py-op">.</tt><tt class="py-name">FONT_HERSHEY_SIMPLEX</tt><tt class="py-op">,</tt> <tt class="py-number">0.75</tt><tt class="py-op">,</tt> <tt class="py-op">(</tt><tt class="py-number">255</tt><tt class="py-op">,</tt> <tt class="py-number">255</tt><tt class="py-op">,</tt> <tt class="py-number">255</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-number">3</tt><tt class="py-op">)</tt> </tt>
+<a name="L85"></a><tt class="py-lineno"> 85</tt>  <tt class="py-line">        <tt class="py-name">cv2</tt><tt class="py-op">.</tt><tt class="py-name">imshow</tt><tt class="py-op">(</tt><tt class="py-string">"Cou"</tt><tt class="py-op">,</tt> <tt class="py-name">img_red_check</tt><tt class="py-op">)</tt> </tt>
+<a name="L86"></a><tt class="py-lineno"> 86</tt>  <tt class="py-line">        <tt class="py-comment">##cv2.imshow("CheckHSV", img_check)</tt> </tt>
+<a name="L87"></a><tt class="py-lineno"> 87</tt>  <tt class="py-line"> </tt>
+<a name="L88"></a><tt class="py-lineno"> 88</tt>  <tt class="py-line">        <tt id="link-48" class="py-name"><a title="Mul_Obj_Trackery.detect.numFrames
+Mul_Obj_Trackery.main.numFrames
+Mul_Obj_Trackery.recognize.numFrames" class="py-name" href="#" onclick="return doclink('link-48', 'numFrames', 'link-46');">numFrames</a></tt> <tt class="py-op">+=</tt> <tt class="py-number">1</tt> </tt>
+<a name="L89"></a><tt class="py-lineno"> 89</tt>  <tt class="py-line">        <tt class="py-name">key</tt> <tt class="py-op">=</tt> <tt class="py-name">cv2</tt><tt class="py-op">.</tt><tt class="py-name">waitKey</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> <tt class="py-op">&amp;</tt> <tt class="py-number">0xFF</tt> </tt>
+<a name="L90"></a><tt class="py-lineno"> 90</tt>  <tt class="py-line">        <tt class="py-comment"># if the 'q' key is pressed, stop the loop</tt> </tt>
+<a name="L91"></a><tt class="py-lineno"> 91</tt>  <tt class="py-line">        <tt class="py-keyword">if</tt> <tt class="py-name">key</tt> <tt class="py-op">==</tt> <tt class="py-name">ord</tt><tt class="py-op">(</tt><tt class="py-string">"q"</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+<a name="L92"></a><tt class="py-lineno"> 92</tt>  <tt class="py-line">                <tt class="py-keyword">break</tt> </tt>
+<a name="L93"></a><tt class="py-lineno"> 93</tt>  <tt class="py-line"> </tt>
+<a name="L94"></a><tt class="py-lineno"> 94</tt>  <tt class="py-line"><tt class="py-keyword">with</tt> <tt class="py-name">open</tt><tt class="py-op">(</tt><tt id="link-49" class="py-name"><a title="Mul_Obj_Trackery.HUB_Model.recog2track.folder_name
+Mul_Obj_Trackery.main.folder_name" class="py-name" href="#" onclick="return doclink('link-49', 'folder_name', 'link-9');">folder_name</a></tt><tt class="py-op">,</tt> <tt class="py-string">'w'</tt><tt class="py-op">)</tt> <tt class="py-keyword">as</tt> <tt class="py-name">f</tt><tt class="py-op">:</tt> </tt>
+<a name="L95"></a><tt class="py-lineno"> 95</tt>  <tt class="py-line">    <tt class="py-keyword">for</tt> <tt class="py-name">s</tt> <tt class="py-keyword">in</tt> <tt id="link-50" class="py-name"><a title="Mul_Obj_Trackery.main.values
+Mul_Obj_Trackery.recognize.values" class="py-name" href="#" onclick="return doclink('link-50', 'values', 'link-24');">values</a></tt><tt class="py-op">:</tt> </tt>
+<a name="L96"></a><tt class="py-lineno"> 96</tt>  <tt class="py-line">        <tt class="py-name">s</tt> <tt class="py-op">=</tt> <tt class="py-name">str</tt><tt class="py-op">(</tt><tt class="py-name">s</tt><tt class="py-op">)</tt> </tt>
+<a name="L97"></a><tt class="py-lineno"> 97</tt>  <tt class="py-line">        <tt class="py-name">f</tt><tt class="py-op">.</tt><tt class="py-name">write</tt><tt class="py-op">(</tt><tt class="py-name">s</tt> <tt class="py-op">+</tt> <tt class="py-string">'\n'</tt><tt class="py-op">)</tt> </tt>
+<a name="L98"></a><tt class="py-lineno"> 98</tt>  <tt class="py-line"> </tt>
+<a name="L99"></a><tt class="py-lineno"> 99</tt>  <tt class="py-line"><tt class="py-comment">#with open(the_filename, 'r') as f:</tt> </tt>
+<a name="L100"></a><tt class="py-lineno">100</tt>  <tt class="py-line"><tt class="py-comment">#    my_list = [line.rstrip('\n') for line in f]</tt> </tt>
+<a name="L101"></a><tt class="py-lineno">101</tt>  <tt class="py-line"> </tt>
+<a name="L102"></a><tt class="py-lineno">102</tt>  <tt class="py-line"><tt class="py-comment"># cleanup the camera and close any open windows</tt> </tt>
+<a name="L103"></a><tt class="py-lineno">103</tt>  <tt class="py-line"><tt id="link-51" class="py-name"><a title="Mul_Obj_Trackery.HUB_Model.recog2track.camera
+Mul_Obj_Trackery.detect.camera
+Mul_Obj_Trackery.main.camera
+Mul_Obj_Trackery.recognize.camera" class="py-name" href="#" onclick="return doclink('link-51', 'camera', 'link-11');">camera</a></tt><tt class="py-op">.</tt><tt class="py-name">release</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L104"></a><tt class="py-lineno">104</tt>  <tt class="py-line"><tt class="py-name">cv2</tt><tt class="py-op">.</tt><tt class="py-name">destroyAllWindows</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> </tt>
+<a name="L105"></a><tt class="py-lineno">105</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="Mul_Obj_Trackery-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >ame</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Sep 30 19:26:28 2016
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

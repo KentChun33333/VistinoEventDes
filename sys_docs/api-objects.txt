@@ -1,0 +1,14 @@
+Has_A	Has_A-module.html
+Has_A.__package__	Has_A-module.html#__package__
+Has_A.Course	Has_A.Course-class.html
+Has_A.Course.add_running	Has_A.Course-class.html#add_running
+Has_A.Course.__init__	Has_A.Course-class.html#__init__
+Has_A.CourseRunning	Has_A.CourseRunning-class.html
+Has_A.CourseRunning.__init__	Has_A.CourseRunning-class.html#__init__
+Has_A.CourseRunning.add_student	Has_A.CourseRunning-class.html#add_student
+Has_A.Department	Has_A.Department-class.html
+Has_A.Department.add_course	Has_A.Department-class.html#add_course
+Has_A.Department.__init__	Has_A.Department-class.html#__init__
+Has_A.Student	Has_A.Student-class.html
+Has_A.Student.enrol	Has_A.Student-class.html#enrol
+Has_A.Student.__init__	Has_A.Student-class.html#__init__

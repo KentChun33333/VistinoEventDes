@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Mul_Obj_Trackery.HUB_Model.common_tool_agent.descriptor_agent.hog</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="Mul_Obj_Trackery-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >ame</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="Mul_Obj_Trackery-module.html">Package&nbsp;Mul_Obj_Trackery</a> ::
+        <a href="Mul_Obj_Trackery.HUB_Model-module.html">Package&nbsp;HUB_Model</a> ::
+        <a href="Mul_Obj_Trackery.HUB_Model.common_tool_agent-module.html">Package&nbsp;common_tool_agent</a> ::
+        <a href="Mul_Obj_Trackery.HUB_Model.common_tool_agent.descriptor_agent-module.html">Package&nbsp;descriptor_agent</a> ::
+        Module&nbsp;hog
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="Mul_Obj_Trackery.HUB_Model.common_tool_agent.descriptor_agent.hog-pysrc.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<h1 class="epydoc">Source Code for <a href="Mul_Obj_Trackery.HUB_Model.common_tool_agent.descriptor_agent.hog-module.html">Module Mul_Obj_Trackery.HUB_Model.common_tool_agent.descriptor_agent.hog</a></h1>
+<pre class="py-src">
+<a name="L1"></a><tt class="py-lineno"> 1</tt>  <tt class="py-line"> </tt>
+<a name="L2"></a><tt class="py-lineno"> 2</tt>  <tt class="py-line"><tt class="py-comment"># Use skimage feature </tt> </tt>
+<a name="L3"></a><tt class="py-lineno"> 3</tt>  <tt class="py-line"><tt class="py-keyword">from</tt> <tt class="py-name">skimage</tt> <tt class="py-keyword">import</tt> <tt class="py-name">feature</tt> </tt>
+<a name="L4"></a><tt class="py-lineno"> 4</tt>  <tt class="py-line"><tt class="py-keyword">import</tt> <tt class="py-name">numpy</tt> <tt class="py-keyword">as</tt> <tt class="py-name">np</tt> </tt>
+<a name="L5"></a><tt class="py-lineno"> 5</tt>  <tt class="py-line"> </tt>
+<a name="HOG"></a><div id="HOG-def"><a name="L6"></a><tt class="py-lineno"> 6</tt> <a class="py-toggle" href="#" id="HOG-toggle" onclick="return toggle('HOG');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="Mul_Obj_Trackery.HUB_Model.common_tool_agent.descriptor_agent.hog.HOG-class.html">HOG</a><tt class="py-op">:</tt> </tt>
+</div><div id="HOG-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="HOG-expanded"><a name="HOG.__init__"></a><div id="HOG.__init__-def"><a name="L7"></a><tt class="py-lineno"> 7</tt> <a class="py-toggle" href="#" id="HOG.__init__-toggle" onclick="return toggle('HOG.__init__');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="Mul_Obj_Trackery.HUB_Model.common_tool_agent.descriptor_agent.hog.HOG-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">orientations</tt><tt class="py-op">=</tt><tt class="py-number">12</tt><tt class="py-op">,</tt> <tt class="py-param">pixelsPerCell</tt><tt class="py-op">=</tt><tt class="py-op">(</tt><tt class="py-number">4</tt><tt class="py-op">,</tt> <tt class="py-number">4</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-param">cellsPerBlock</tt><tt class="py-op">=</tt><tt class="py-op">(</tt><tt class="py-number">2</tt><tt class="py-op">,</tt> <tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> <tt class="py-param">normalize</tt><tt class="py-op">=</tt><tt class="py-name">True</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="HOG.__init__-collapsed" style="display:none;" pad="++" indent="++++++++++++"></div><div id="HOG.__init__-expanded"><a name="L8"></a><tt class="py-lineno"> 8</tt>  <tt class="py-line">                <tt class="py-comment"># store the number of orientations, pixels per cell, cells per block, and</tt> </tt>
+<a name="L9"></a><tt class="py-lineno"> 9</tt>  <tt class="py-line">                <tt class="py-comment"># whether normalization should be applied to the image</tt> </tt>
+<a name="L10"></a><tt class="py-lineno">10</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">orientations</tt> <tt class="py-op">=</tt> <tt class="py-name">orientations</tt> </tt>
+<a name="L11"></a><tt class="py-lineno">11</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pixelsPerCell</tt> <tt class="py-op">=</tt> <tt class="py-name">pixelsPerCell</tt> </tt>
+<a name="L12"></a><tt class="py-lineno">12</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">cellsPerBlock</tt> <tt class="py-op">=</tt> <tt class="py-name">cellsPerBlock</tt> </tt>
+<a name="L13"></a><tt class="py-lineno">13</tt>  <tt class="py-line">                <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">normalize</tt> <tt class="py-op">=</tt> <tt class="py-name">normalize</tt> </tt>
+</div><a name="L14"></a><tt class="py-lineno">14</tt>  <tt class="py-line"> </tt>
+<a name="HOG.describe"></a><div id="HOG.describe-def"><a name="L15"></a><tt class="py-lineno">15</tt> <a class="py-toggle" href="#" id="HOG.describe-toggle" onclick="return toggle('HOG.describe');">-</a><tt class="py-line">        <tt class="py-keyword">def</tt> <a class="py-def-name" href="Mul_Obj_Trackery.HUB_Model.common_tool_agent.descriptor_agent.hog.HOG-class.html#describe">describe</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">image</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="HOG.describe-collapsed" style="display:none;" pad="++" indent="++++++++++++"></div><div id="HOG.describe-expanded"><a name="L16"></a><tt class="py-lineno">16</tt>  <tt class="py-line">                <tt class="py-comment"># compute Histogram of Oriented Gradients features</tt> </tt>
+<a name="L17"></a><tt class="py-lineno">17</tt>  <tt class="py-line">                <tt class="py-name">hist</tt> <tt class="py-op">=</tt> <tt class="py-name">feature</tt><tt class="py-op">.</tt><tt id="link-0" class="py-name" targets="Module Mul_Obj_Trackery.HUB_Model.common_tool_agent.descriptor_agent.hog=Mul_Obj_Trackery.HUB_Model.common_tool_agent.descriptor_agent.hog-module.html"><a title="Mul_Obj_Trackery.HUB_Model.common_tool_agent.descriptor_agent.hog" class="py-name" href="#" onclick="return doclink('link-0', 'hog', 'link-0');">hog</a></tt><tt class="py-op">(</tt><tt class="py-name">image</tt><tt class="py-op">,</tt> <tt class="py-name">orientations</tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">orientations</tt><tt class="py-op">,</tt> <tt class="py-name">pixels_per_cell</tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">pixelsPerCell</tt><tt class="py-op">,</tt> </tt>
+<a name="L18"></a><tt class="py-lineno">18</tt>  <tt class="py-line">                        <tt class="py-name">cells_per_block</tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">cellsPerBlock</tt><tt class="py-op">,</tt> <tt class="py-name">normalise</tt><tt class="py-op">=</tt><tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">normalize</tt><tt class="py-op">)</tt> </tt>
+<a name="L19"></a><tt class="py-lineno">19</tt>  <tt class="py-line">                <tt class="py-name">hist</tt><tt class="py-op">[</tt><tt class="py-name">hist</tt> <tt class="py-op">&lt;</tt> <tt class="py-number">0</tt><tt class="py-op">]</tt> <tt class="py-op">=</tt> <tt class="py-number">0</tt> </tt>
+<a name="L20"></a><tt class="py-lineno">20</tt>  <tt class="py-line">                <tt class="py-comment"># return the histogram</tt> </tt>
+<a name="L21"></a><tt class="py-lineno">21</tt>  <tt class="py-line">                <tt class="py-keyword">return</tt> <tt class="py-name">hist</tt><tt class="py-op">.</tt><tt class="py-name">reshape</tt><tt class="py-op">(</tt><tt class="py-number">1</tt><tt class="py-op">,</tt><tt class="py-op">-</tt><tt class="py-number">1</tt><tt class="py-op">)</tt> </tt>
+</div></div><a name="L22"></a><tt class="py-lineno">22</tt>  <tt class="py-line"> </tt>
+<a name="LocalBinaryPatterns"></a><div id="LocalBinaryPatterns-def"><a name="L23"></a><tt class="py-lineno">23</tt> <a class="py-toggle" href="#" id="LocalBinaryPatterns-toggle" onclick="return toggle('LocalBinaryPatterns');">-</a><tt class="py-line"><tt class="py-keyword">class</tt> <a class="py-def-name" href="Mul_Obj_Trackery.HUB_Model.common_tool_agent.descriptor_agent.hog.LocalBinaryPatterns-class.html">LocalBinaryPatterns</a><tt class="py-op">:</tt> </tt>
+</div><div id="LocalBinaryPatterns-collapsed" style="display:none;" pad="++" indent="++++"></div><div id="LocalBinaryPatterns-expanded"><a name="LocalBinaryPatterns.__init__"></a><div id="LocalBinaryPatterns.__init__-def"><a name="L24"></a><tt class="py-lineno">24</tt> <a class="py-toggle" href="#" id="LocalBinaryPatterns.__init__-toggle" onclick="return toggle('LocalBinaryPatterns.__init__');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="Mul_Obj_Trackery.HUB_Model.common_tool_agent.descriptor_agent.hog.LocalBinaryPatterns-class.html#__init__">__init__</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">numPoints</tt><tt class="py-op">,</tt> <tt class="py-param">radius</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LocalBinaryPatterns.__init__-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="LocalBinaryPatterns.__init__-expanded"><a name="L25"></a><tt class="py-lineno">25</tt>  <tt class="py-line">        <tt class="py-comment"># store the number of points and radius</tt> </tt>
+<a name="L26"></a><tt class="py-lineno">26</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">numPoints</tt> <tt class="py-op">=</tt> <tt class="py-name">numPoints</tt> </tt>
+<a name="L27"></a><tt class="py-lineno">27</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">radius</tt> <tt class="py-op">=</tt> <tt class="py-name">radius</tt>     </tt>
+</div><a name="L28"></a><tt class="py-lineno">28</tt>  <tt class="py-line"> </tt>
+<a name="LocalBinaryPatterns.describe"></a><div id="LocalBinaryPatterns.describe-def"><a name="L29"></a><tt class="py-lineno">29</tt> <a class="py-toggle" href="#" id="LocalBinaryPatterns.describe-toggle" onclick="return toggle('LocalBinaryPatterns.describe');">-</a><tt class="py-line">    <tt class="py-keyword">def</tt> <a class="py-def-name" href="Mul_Obj_Trackery.HUB_Model.common_tool_agent.descriptor_agent.hog.LocalBinaryPatterns-class.html#describe">describe</a><tt class="py-op">(</tt><tt class="py-param">self</tt><tt class="py-op">,</tt> <tt class="py-param">image</tt><tt class="py-op">,</tt> <tt class="py-param">eps</tt><tt class="py-op">=</tt><tt class="py-number">1e-7</tt><tt class="py-op">)</tt><tt class="py-op">:</tt> </tt>
+</div><div id="LocalBinaryPatterns.describe-collapsed" style="display:none;" pad="++" indent="++++++++"></div><div id="LocalBinaryPatterns.describe-expanded"><a name="L30"></a><tt class="py-lineno">30</tt>  <tt class="py-line">        <tt class="py-comment"># compute the Local Binary Pattern representation</tt> </tt>
+<a name="L31"></a><tt class="py-lineno">31</tt>  <tt class="py-line">        <tt class="py-comment"># of the image, and then use the LBP representation</tt> </tt>
+<a name="L32"></a><tt class="py-lineno">32</tt>  <tt class="py-line">        <tt class="py-comment"># to build the histogram of patterns</tt> </tt>
+<a name="L33"></a><tt class="py-lineno">33</tt>  <tt class="py-line">        <tt class="py-name">lbp</tt> <tt class="py-op">=</tt> <tt class="py-name">feature</tt><tt class="py-op">.</tt><tt class="py-name">local_binary_pattern</tt><tt class="py-op">(</tt><tt class="py-name">image</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">numPoints</tt><tt class="py-op">,</tt> </tt>
+<a name="L34"></a><tt class="py-lineno">34</tt>  <tt class="py-line">        <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">radius</tt><tt class="py-op">,</tt> <tt class="py-name">method</tt><tt class="py-op">=</tt><tt class="py-string">"uniform"</tt><tt class="py-op">)</tt> </tt>
+<a name="L35"></a><tt class="py-lineno">35</tt>  <tt class="py-line">        <tt class="py-op">(</tt><tt class="py-name">hist</tt><tt class="py-op">,</tt> <tt id="link-1" class="py-name" targets="Module Mul_Obj_Trackery._=Mul_Obj_Trackery._-module.html"><a title="Mul_Obj_Trackery._" class="py-name" href="#" onclick="return doclink('link-1', '_', 'link-1');">_</a></tt><tt class="py-op">)</tt> <tt class="py-op">=</tt> <tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">histogram</tt><tt class="py-op">(</tt><tt class="py-name">lbp</tt><tt class="py-op">.</tt><tt class="py-name">ravel</tt><tt class="py-op">(</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
+<a name="L36"></a><tt class="py-lineno">36</tt>  <tt class="py-line">            <tt class="py-name">bins</tt><tt class="py-op">=</tt><tt class="py-name">np</tt><tt class="py-op">.</tt><tt class="py-name">arange</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">numPoints</tt> <tt class="py-op">+</tt> <tt class="py-number">3</tt><tt class="py-op">)</tt><tt class="py-op">,</tt> </tt>
+<a name="L37"></a><tt class="py-lineno">37</tt>  <tt class="py-line">            <tt class="py-name">range</tt><tt class="py-op">=</tt><tt class="py-op">(</tt><tt class="py-number">0</tt><tt class="py-op">,</tt> <tt class="py-name">self</tt><tt class="py-op">.</tt><tt class="py-name">numPoints</tt> <tt class="py-op">+</tt> <tt class="py-number">2</tt><tt class="py-op">)</tt><tt class="py-op">)</tt> </tt>
+<a name="L38"></a><tt class="py-lineno">38</tt>  <tt class="py-line"> </tt>
+<a name="L39"></a><tt class="py-lineno">39</tt>  <tt class="py-line">        <tt class="py-comment"># normalize the histogram</tt> </tt>
+<a name="L40"></a><tt class="py-lineno">40</tt>  <tt class="py-line">        <tt class="py-name">hist</tt> <tt class="py-op">=</tt> <tt class="py-name">hist</tt><tt class="py-op">.</tt><tt class="py-name">astype</tt><tt class="py-op">(</tt><tt class="py-string">"float"</tt><tt class="py-op">)</tt> </tt>
+<a name="L41"></a><tt class="py-lineno">41</tt>  <tt class="py-line">        <tt class="py-name">hist</tt> <tt class="py-op">/=</tt> <tt class="py-op">(</tt><tt class="py-name">hist</tt><tt class="py-op">.</tt><tt class="py-name">sum</tt><tt class="py-op">(</tt><tt class="py-op">)</tt> <tt class="py-op">+</tt> <tt class="py-name">eps</tt><tt class="py-op">)</tt>         </tt>
+<a name="L42"></a><tt class="py-lineno">42</tt>  <tt class="py-line"> </tt>
+<a name="L43"></a><tt class="py-lineno">43</tt>  <tt class="py-line">        <tt class="py-comment"># return the histogram of Local Binary Patterns</tt> </tt>
+<a name="L44"></a><tt class="py-lineno">44</tt>  <tt class="py-line">        <tt class="py-keyword">return</tt> <tt class="py-name">hist</tt> </tt>
+</div></div><a name="L45"></a><tt class="py-lineno">45</tt>  <tt class="py-line"> </tt><script type="text/javascript">
+<!--
+expandto(location.href);
+// -->
+</script>
+</pre>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="Mul_Obj_Trackery-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            >ame</th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Fri Sep 30 19:26:28 2016
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

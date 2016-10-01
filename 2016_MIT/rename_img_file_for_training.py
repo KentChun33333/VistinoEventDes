@@ -1,48 +1,48 @@
-########################################################################
+
+#==============================================================================
+# Author : Kent Chiu (kentchun33333@gmail.com)
+#==============================================================================
+#
+# Operation Notice
+# - This recipe would rename all image_files in Current Working Folder
+# - It would also generate a new BG.file in current folder 
+# - This recipe is focus on pre-process for following OpenCV Haar training 
+# - Be aware of all raw files' name would be changed after this recipe
+# 
+#==============================================================================
 
 import os
 import argparse
 
 def get_args():
-    '''This function parses and return arguments passed in'''
-    # Assign description to the help doc
-    parser = argparse.ArgumentParser(
-        description=''' Script read both depth and rgb frames from kinetic
-        and save them in Assigned Folder''')
-    # Add arguments
-    parser.add_argument(
-        '-fn', '--folder_name', type=str, \
-        help='Object or Event as Folder name', required=True)
-    # Array for all arguments passed to script
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument('-fn', '--folder_name', type=str,
+        help='add the New Name for this set of images', required=True)
+
     args = parser.parse_args()
-    # Assign args to variables
-    folder_name = args.folder_name
-    # Return all variable values
-    return folder_name
+    return args.folder_name
 
 
 def main():
-    origin_file_name = os.listdir((os.getcwd()))
-    
-    # disgard .DSTORE or else ...
-    origin_file_name = [s for s in origin_file_name if '.jpg' in s or '.png' in s]
+    # cuurent working folder
+    rawName = os.listdir((os.getcwd()))
+    rawName = [s for s in rawName if '.jpg' in s or '.png' in s]
 
     # Get Customized Filename
     folder_name=get_args()
     
     # New_File_Name for list
-    new_file_name = \
-    [folder_name+ str(i)+'.png' \
-    for i in range(len(origin_file_name))]
+    new_file_name = [folder_name+ str(i)+'.png' \
+    for i in range(len(rawName))]
 
     # Substitude the file name
-    for i in range(len(origin_file_name)):
-        os.rename(origin_file_name[i], new_file_name[i])
+    for i in range(len(rawName)):
+        os.rename(rawName[i], new_file_name[i])
 
-    file = open('background.txt', 'w')
-    for i in new_file_name:
-        file.write(i+'\n')
-    file.close()
+    with open('BG.txt', 'w') as f:
+        for i in new_file_name:
+            f.write(i+'\n')
 
 if __name__=='__main__':
 	main()

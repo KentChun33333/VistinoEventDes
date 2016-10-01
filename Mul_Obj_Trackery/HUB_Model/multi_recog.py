@@ -11,29 +11,15 @@ from common_tool_agent.common_func import auto_resized
 import numpy as np
 import cv2
 
+class CallBack(object):
+    def __init__(self):
+        self.staticmodel = StaticModel()
 
-class Multi_Model_Iterative_Detect:
-    def __init__(self , mulRecog):
-        '''
-        mulRecog = [ M1, M2, ...]
-        Models must have detect attributes
-        This model is use for mulRecog iterations, not including motions 
-        '''
-        self.models = mulRecog
-        self.objNums = len(mulRecog)
+class StaticModel(object):
+    def __init__(self):
+        pass
 
-    def detect(self, img):
-        raw = img.copy()
-        position = []
-        for i in range(self.objNums):
-            position.append([])
-        for model in self.models:
-            raw, boundingBox = model.detect(raw)
-        return raw, position
-    def showDetect(self,img):
-        show(self.detect(img)[0])
-
-class HaarCV_Recognizor:
+class HaarCV_Recognizor(StaticModel):
     def __init__(self, xmlPath='model_hub/opencv_cascade/Rhand_no_tools/cascade.xml'):
         # store the number of orientations, pixels per cell, cells per block, and
         # whether normalization should be applied to the image
@@ -75,7 +61,7 @@ class HaarCV_Recognizor:
         return (x,y)
 
 
-class PureScrewDriverRecog:
+class PureScrewDriverRecog(StaticModel):
     def __init__(self, conf):
         '''Ex: conf = Conf('/Users/kentchiu/VistinoEventDes/2016_MIT/Auto_HOG_SVM/conf_hub/conf_pureScrewDriver_2.json')'''
         self.conf = conf
@@ -127,7 +113,7 @@ class PureScrewDriverRecog:
     def show_detect(self, img, pro=0.6, scale=1.3):
         show(self.detect(img,pro, scale)[0])
 
-class SKin_Hand_Detection():
+class SKin_Hand_Detection(StaticModel):
     def __init__(self, Flag = False):
         self.path = 'model_hub/opencv_cascade/frontalFace10/haarcascade_frontalface_alt.xml'
         self.Flag = Flag
