@@ -18,9 +18,12 @@ from HUB_Model.multi_recog import HaarCV_Recognizor, PureScrewDriverRecog
 
 from com_func.conf import Conf
 
+<<<<<<< Updated upstream
 #
 import dlib
 
+=======
+>>>>>>> Stashed changes
 
 class Recog2Track():
     def __init__(self, mulRecog, modelNameList, path_recognition_Flag=True):
@@ -167,7 +170,7 @@ class Recog2Track():
             NewImg = img.copy()
 
             # this operation is to create a black board for print the text
-            cv2.rectangle(NewImg,(0,0),(800,125),(10,10,10),-1)
+            cv2.rectangle(NewImg,(0,0),(800,125),(10,10,10),-1) # Vis Level
 
             for modelID, model in enumerate(self.recogModels):
                 ############################
@@ -177,7 +180,7 @@ class Recog2Track():
                     NewImg, tarBox = model.detect(NewImg)
 
                     ################################################################################
-                    print 'recognitions mode'
+                    print 'recognitions mode' # Info Lel
                     print 'Processing : ( Model : {}, Frame : {} )'.format(modelID, self.numFrames)
                     if len(tarBox)>0: # obj been detected
                         assert len(tarBox)==4
@@ -201,6 +204,7 @@ class Recog2Track():
                     #
 
                 elif self.trackingFlag[modelID]==1:
+                    # Tracking level
                     NewImg, tarBox = self.template_match(NewImg, self.refImgforMatch[modelID] )
 
                     ################################################################################

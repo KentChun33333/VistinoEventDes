@@ -47,7 +47,7 @@ function toggle_private() {
           }
         }
         // Set a cookie to remember the current option.
-        document.cookie = "EpydocPrivate="+cmd;
+        document.cookie = "KentChiu_DocFactoryPrivate="+cmd;
       }
 function show_private() {
         var elts = document.getElementsByTagName("a");
@@ -78,7 +78,7 @@ function setFrame(url1, url2) {
           parent.frames[2].location.href = url2;
       }
 function checkCookie() {
-        var cmd=getCookie("EpydocPrivate");
+        var cmd=getCookie("KentChiu_DocFactoryPrivate");
         if (cmd && cmd.substr(0,4)!="show" && location.href.indexOf("#_") < 0)
             toggle_private();
       }

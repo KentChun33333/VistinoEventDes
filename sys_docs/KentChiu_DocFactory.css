@@ -1,8 +1,8 @@
 
 
-/* Epydoc CSS Stylesheet
+/* KentChiu_DocFactory CSS Stylesheet
  *
- * This stylesheet can be used to customize the appearance of epydoc's
+ * This stylesheet can be used to customize the appearance of KentChiu_DocFactory's
  * HTML output.
  *
  */
@@ -12,8 +12,8 @@
  *     link colors with 'a:link' and 'a:visited'.
  *   - Use bold for decision list terms.
  *   - The heading styles defined here are used for headings *within*
- *     docstring descriptions.  All headings used by epydoc itself use
- *     either class='epydoc' or class='toc' (CSS styles for both
+ *     docstring descriptions.  All headings used by KentChiu_DocFactory itself use
+ *     either class='KentChiu_DocFactory' or class='toc' (CSS styles for both
  *     defined below).
  */
 body                        { background: #ffffff; color: #000000; }
@@ -38,15 +38,15 @@ a.link                      { font-family: monospace; }
  *     classes or modules; options links, to show/hide private
  *     variables and to show/hide frames; and a page title (using
  *     <h1>).  The page title may be followed by a link to the
- *     corresponding source code (using 'span.codelink').
+ *     corresponding  (using 'span.codelink').
  *   - The footer consists of a navigation bar, a timestamp, and a
- *     pointer to epydoc's homepage.
+ *     pointer to KentChiu_DocFactory's homepage.
  */ 
-h1.epydoc                   { margin: 0; font-size: +140%; font-weight: bold; }
-h2.epydoc                   { font-size: +130%; font-weight: bold; }
-h3.epydoc                   { font-size: +115%; font-weight: bold;
+h1.KentChiu_DocFactory                   { margin: 0; font-size: +140%; font-weight: bold; }
+h2.KentChiu_DocFactory                   { font-size: +130%; font-weight: bold; }
+h3.KentChiu_DocFactory                   { font-size: +115%; font-weight: bold;
                               margin-top: 0.2em; }
-td h3.epydoc                { font-size: +115%; font-weight: bold;
+td h3.KentChiu_DocFactory                { font-size: +115%; font-weight: bold;
                               margin-bottom: 0; }
 table.navbar                { background: #a0c0ff; color: #000000;
                               border: 2px groove #c0d0d0; }
@@ -232,7 +232,7 @@ h2.toc                      { font-size: 100%; font-weight: bold;
  *     The expand/collapse block toggle button is displayed with
  *     'a.py-toggle' (Note: the CSS style for 'a.py-toggle' should not
  *     modify the font size of the text.)
- *   - If a source code page is opened with an anchor, then the
+ *   - If a  page is opened with an anchor, then the
  *     corresponding code block will be highlighted.  The code
  *     block's header is highlighted with 'py-highlight-hdr'; and
  *     the code block's body is highlighted with 'py-highlight'.
