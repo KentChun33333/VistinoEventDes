@@ -18,7 +18,8 @@ from HUB_Model.multi_recog import HaarCV_Recognizor, PureScrewDriverRecog
 
 from com_func.conf import Conf
 
-
+#
+import dlib
 
 
 class Recog2Track():
@@ -67,8 +68,12 @@ class Recog2Track():
         self.recogModels = mulRecog
 
 
-    def tracking_mode(self,):
-        pass
+    def tracking_mode(self,refImg, tarBox):
+        startX, startY, endX, endY = tarBox
+        tracker = dlib.correlation_tracker()
+        # A little larger init bounding box would be better : )
+        tracker.start_track(refImg, dlib.rectangle(startX, startY, endX, endY))
+        return newImg, tarBox
 
     def template_match(self, newImg,refImg , thresHold=0.85):
         '''
@@ -95,7 +100,6 @@ class Recog2Track():
         startX , startY = top_left[0], top_left[1]
         endX, endY = bottom_right
         tarBox = (startX, startY, endX, endY)
-        print tarBox
         return newImg, tarBox
 
 
