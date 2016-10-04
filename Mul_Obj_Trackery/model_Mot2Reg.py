@@ -4,6 +4,7 @@ __CreateDate__ = '2016-08-08'
 # This Script is based on the previous version from Motion_Recognition
 # For realtime process, could ref it
 
+import os
 import numpy as np
 import argparse
 import imutils
@@ -15,7 +16,7 @@ from HUB_dictionary.motion_dictionary  import Motion_Dictionary
 from HUB_dictionary.path_dictionary    import Path_DTW_Dictionary
 from HUB_dictionary.gesture_dictionary import Gesture_DTW_Dictionary
 from HUB_Model.multi_recog import HaarCV_Recognizor, PureScrewDriverRecog
-
+from HUB_Model import StaticModel
 from com_func.conf import Conf
 
 class Recog2Track():
@@ -42,6 +43,9 @@ class Recog2Track():
 
         # this variable is contain the ref_img that for fast match
         self.refImgforMatch = []
+
+        # 
+        self.tracker = Tracker()
 
         # this variable is contrain the Flag of state
         self.trackingFlag = []
@@ -300,6 +304,23 @@ def template_match_center_point(refImg, newImg, thresHold=0.88):
     cx = int(top_left[0]+0.5*w)
     cy = int(top_left[1]+0.5*h)
     return cx, cy
+
+if __name__=='__main__':
+    import imageio
+    if os.name=='nt':
+        model_1 = HaarCV_Recognizor('C:/Users/kentc/Documents/Git'
+            'Hub/VistinoEventDes/2016_MIT/Auto_HOG'
+            '_SVM/model_hub/svm/PureScrewDriver_2.model')
+        model_2 = PureScrewDriverRecog(Conf('C:/Users/kentc/Documents/GitHub/'
+            'VistinoEventDes/2016_MIT/Auto_HOG_SVM/'
+            'conf_hub/conf_pureScrewDriver_2.json'))
+    else:
+        model_1 = HaarCV_Recognizor()
+        model_2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))
+        vid=imageio.get_reader('~/MIT_Vedio/2016-01-21/10.167.10.158_01_20160121082638418_1.mp4')
+    ReTesT = Recog2Track([model_1,model_2],['Hand', 'SkrewDriver'])
+    output = ReTesT.perform_VID_analysis(300,320,vid)
+    video_saving('~/MIT_Vedio/test_1003_01.mp4',8.0,output)
 '''
 @ MAC OS
 model_1 = HaarCV_Recognizor()

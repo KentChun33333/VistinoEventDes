@@ -5,6 +5,7 @@ __CreateDate__ = '2016-08-08'
 # For realtime process, could ref it
 
 import numpy as np
+import os
 import argparse
 import imutils
 import cv2
@@ -15,15 +16,12 @@ from HUB_dictionary.motion_dictionary  import Motion_Dictionary
 from HUB_dictionary.path_dictionary    import Path_DTW_Dictionary
 from HUB_dictionary.gesture_dictionary import Gesture_DTW_Dictionary
 from HUB_Model.multi_recog import HaarCV_Recognizor, PureScrewDriverRecog
-
+from HUB_Model import StaticModel , Tracker
 from com_func.conf import Conf
-
-<<<<<<< Updated upstream
-#
+from com_func.video_io import video_saving
 import dlib
+import gc
 
-=======
->>>>>>> Stashed changes
 
 class Recog2Track():
     def __init__(self, mulRecog, modelNameList, path_recognition_Flag=True):
@@ -41,14 +39,14 @@ class Recog2Track():
         # this variable is used to output the training data or ...etc
         self.motionALL = [] # OutPutModel...
 
-        # this variable is the same as above, just trimmed
-        self.motionSeq = []
-
         # max likelihood for the most possible motion
         self.motionLikehoodSeq = []
 
         # this variable is contain the ref_img that for fast match
         self.refImgforMatch = []
+
+        # 
+        self.tracker = []
 
         # this variable is contrain the Flag of state
         self.trackingFlag = []
@@ -60,7 +58,7 @@ class Recog2Track():
             # or [ 1,0  ] for Flag
             self.position.append([])
             self.motionALL.append([])
-            self.motionSeq.append([])
+            self.tracker.append(Tracker())
             self.motionLikehoodSeq.append([])
             self.refImgforMatch.append([])
             self.trackingFlag.append(0)
@@ -112,36 +110,45 @@ class Recog2Track():
         pointsSet  : the location of the objects
         modelID    : the name that we predifined when iniciation the class
         '''
-        Dictionary = Motion_Dictionary()
+        motionDictionary = Motion_Dictionary()
         PathDictionary = Path_DTW_Dictionary()
         if len(pointsSet)>3 :
             last_point = pointsSet[-2]
-            tmp_motion = motion_interpretation.interpreter(last_point,pointsSet[-1])
-            #
+
+            # Set the min Distance of object to see as Stationary   
+            min_noiseDistance = int(0.01*len(imgAFrecog))
+
+            # interpreter the mostlikly motion
+            tmp_motion = motion_interpretation.interpreter(last_point,pointsSet[-1], min_noiseDistance)
+            
             self.motionALL[modelID].append(tmp_motion) # this is all motion
-            self.motionSeq[modelID].append(tmp_motion) # this is time-segment motion
-            # Compute the max_Likelihood
-            self.motionSeq[modelID]      = self.seq_clip(self.motionSeq[modelID],10)
-            motionLikehood = statics_mode(self.motionSeq[modelID])[0]
+
+            if len(self.motionALL[modelID])>10:
+                motionLikehood = statics_mode(self.motionALL[modelID][-10:])[0]
+            else :
+                motionLikehood = statics_mode(self.motionALL[modelID])[0]
+
             self.motionLikehoodSeq[modelID].append(motionLikehood)
-            motionStr      = Dictionary.check(motionLikehood)
+            motionStr      = motionDictionary.check(motionLikehood)
             # %.2f = float with 2 dicimal
             modelName = self.modelNameList[modelID]
             cv2.putText(imgAFrecog,
-                "The %s is %s" % (modelName,motionStr),
+                "ID:%s, %s is %s" % (str(self.numFrames), modelName,motionStr),
                  (20, 50*(1+modelID)), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 255, 255), 6)
             if len(self.motionLikehoodSeq[modelID])>10 and (self.path_recognition is True):
 
+                # =====================================
                 # put it in small LSTM or RNN for NPL
                 # put it into DTW search/match
                 PathRegStr_tmp = PathDictionary.search(self.motionLikehoodSeq[modelID][-7:])
                 if PathRegStr_tmp == 'None':
                     pass
                 else:
-                    cv2.putText(imgAFrecog,
-                        "The %s is %s" % (modelName, PathRegStr_tmp),
-                        (20, 100*(1+modelID)), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 255, 255), 6)
-                    self.pathRegStr = PathRegStr_tmp
+                    pass
+                    #cv2.putText(imgAFrecog,
+                    #    "The %s is %s" % (modelName, PathRegStr_tmp),
+                    #    (20, 100*(1+modelID)), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 255, 255), 6)
+                    #self.pathRegStr = PathRegStr_tmp
 
             # This part spared by not doing path Recognition,
             # if we want to do path recog, please ref 2016MIT/Motion_Recognition
@@ -155,10 +162,6 @@ class Recog2Track():
             # process depth data or gray-scale data
             return imgInput[tarBox[1]:tarBox[3],tarBox[0]:tarBox[2]]
 
-    def seq_clip(self, inPut,seqLen):
-        if len(inPut)<seqLen:
-            return inPut
-        return inPut[-seqLen:]
 
     def perform_VID_analysis(self, startFrame, endFrame, vid):
         '''vidObj based on the image io OBJ'''
@@ -173,69 +176,107 @@ class Recog2Track():
             cv2.rectangle(NewImg,(0,0),(800,125),(10,10,10),-1) # Vis Level
 
             for modelID, model in enumerate(self.recogModels):
-                ############################
-                # add the criteria of Flag #
-                ############################
+
+                # add the criteria of Flag 
                 if self.trackingFlag[modelID]==0:
                     NewImg, tarBox = model.detect(NewImg)
-
-                    ################################################################################
                     print 'recognitions mode' # Info Lel
                     print 'Processing : ( Model : {}, Frame : {} )'.format(modelID, self.numFrames)
                     if len(tarBox)>0: # obj been detected
                         assert len(tarBox)==4
                         position = ((tarBox[0]+tarBox[2])/2, (tarBox[0]+tarBox[2])/2)
                         self.position[modelID].append(position)
-                        ################################
-                        # output the refImg by objects #
-                        ################################
-                        self.refImgforMatch[modelID] = self.have_refimg(NewImg,tarBox,3)
 
-                        #####################################
-                        # if detected, than change the Flag #
-                        #####################################
+                        #===============================
+                        # init the tracking model
+                        # output the refImg by objects 
+
+                        # tarBox enlargement 
+                        w = tarBox[2]-tarBox[0]
+                        h = tarBox[3]-tarBox[1]
+                        tarBox[0] = tarBox[0]-int(w/10.0)
+                        tarBox[1] = tarBox[1]-int(h/10.0)
+                        tarBox[2] = tarBox[2]+int(w/10.0)
+                        tarBox[3] = tarBox[3]+int(h/10.0)
+                        
+                        self.tracker[modelID].start_track(NewImg, tarBox)
+                        #self.refImgforMatch[modelID] = self.have_refimg(NewImg,tarBox,3)
+
+                        # if detected, than change the Flag 
                         self.trackingFlag[modelID]=1
+                        
 
-                    else: # Treat as Stationary
+                    else: # if cant not recog => break
                         if len(self.position[modelID])>0:
                             self.position[modelID].append(self.position[modelID][-1])
+                            
                     NewImg = self.motion_feature_extraction(NewImg,self.position[modelID], modelID)
 
-                    #
 
                 elif self.trackingFlag[modelID]==1:
                     # Tracking level
-                    NewImg, tarBox = self.template_match(NewImg, self.refImgforMatch[modelID] )
 
-                    ################################################################################
+                    # =============================
+                    # Attention Match Method Below 
+                    # NewImg, tarBox = self.template_match(NewImg, self.refImgforMatch[modelID] )
+                    
+                    # ==========================
+                    # correlated_tracker Method 
+
+                    self.tracker[modelID].update(NewImg)
+                    tarBox = self.tracker[modelID].get_position()
+                    top_left = (tarBox[0],tarBox[1])
+                    bottom_right = (tarBox[2],tarBox[3])
+
+                    cv2.rectangle(NewImg, top_left, bottom_right, (255,50*modelID,50*modelID), 2)
+                    
                     print ('tracking_mode')
                     print 'Processing : ( Model : {}, Frame : {} )'.format(modelID, self.numFrames)
-                    if len(tarBox)>0: # obj been detected
+
+                    # if keeping stationary rollback to Ananlyze again
+                    if len(self.motionALL[modelID])>15 :
+                        if self.motionALL[modelID][-15]==5:
+                            self.trackingFlag[modelID]=0
+
+                            #===========
+                            # Roll Back
+                            self.numFrames-=10
+                            self.motionALL[modelID]=self.motionALL[:-9]
+                            # append 0 for breaking the recog loop
+                            self.motionALL[modelID].append(0)
+
+                            imgSeq=imgSeq[:-9]
+                            self.position[modelID]=self.position[modelID][:-9]
+                            self.motionLikehoodSeq[modelID]=self.motionLikehoodSeq[modelID][:-9]
+
+                            # re-init the tracker
+                            self.tracker[modelID] = Tracker()
+                            break
+
+                    elif len(tarBox)>0: # obj been detected
                         assert len(tarBox)==4
                         position = ((tarBox[0]+tarBox[2])/2, (tarBox[0]+tarBox[2])/2)
                         self.position[modelID].append(position)
-                        ################################
+
                         # output the refImg by objects #
-                        ################################
                         self.refImgforMatch[modelID] = self.have_refimg(NewImg,tarBox,3)
 
-                        #####################################
                         # if detected, than change the Flag #
-                        #####################################
                         self.trackingFlag[modelID]=1
 
                     else: # Treat as Stationary
                         if len(self.position[modelID])>0:
                             self.position[modelID].append(self.position[modelID][-1])
-                        #####################################
-                        # if detected, than change the Flag #
-                        #####################################
+                        
+                        # if detected, than change the Flag 
                         self.trackingFlag[modelID]=0
+
+                    # motion extraction
                     NewImg = self.motion_feature_extraction(NewImg,self.position[modelID], modelID)
-                    ################################################################################
 
                 self.numFrames+=1
                 imgSeq.append(NewImg)
+                gc.collect()
         return imgSeq
 
     def perform_WebCam_analysis(self, capIMG):
@@ -261,13 +302,13 @@ class Recog2Track():
     def reinitialising_parameter(self):
         self.position = []
         self.motionALL = [] # OutPutModel...
-        self.motionSeq = []
+
         self.motionLikehoodSeq = []
         self.refImgforMatch = []
         for i in range(self.modelNum):
             self.position.append([])
             self.motionALL.append([])
-            self.motionSeq.append([])
+
             self.motionLikehoodSeq.append([])
             self.refImgforMatch.append([])
         self.pathRegStr = "None"
@@ -305,13 +346,38 @@ def template_match_center_point(refImg, newImg, thresHold=0.88):
     cy = int(top_left[1]+0.5*h)
     return cx, cy
 
-if __name__ == '__main__':
+def get_cli():
+    parser = argparse.ArgumentParser()
+    # Add the video path
+    parser.add_argument('-o','--output', required=True, 
+        help='output the vid_path')
+    # Add the init bounding box position
+    parser.add_argument('-i','--initBox',
+        help='designation the location of the tracking object')
+    args = vars(parser.parse_args())
+    return args
+
+
+if __name__=='__main__':
+    arg = get_cli()
+    assert len(arg['output'].split('.'))==1
     import imageio
-    vid=imageio.get_reader('~/MIT_Vedio/2016-01-21/10.167.10.158_01_20160121082638418_1.mp4')
-    model_1 = HaarCV_Recognizor()
-    model_2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))
+    if os.name=='nt':
+        model_1 = HaarCV_Recognizor('C:/Users/kentc/Documents/Git'
+            'Hub/VistinoEventDes/2016_MIT/Auto_HOG'
+            '_SVM/model_hub/svm/PureScrewDriver_2.model')
+        model_2 = PureScrewDriverRecog(Conf('C:/Users/kentc/Documents/GitHub/'
+            'VistinoEventDes/2016_MIT/Auto_HOG_SVM/'
+            'conf_hub/conf_pureScrewDriver_2.json'))
+    else:
+        model_1 = HaarCV_Recognizor()
+        model_2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))
+        vid=imageio.get_reader('~/MIT_Vedio/2016-01-21/10.167.10.158_01_20160121082638418_1.mp4')
     ReTesT = Recog2Track([model_1,model_2],['Hand', 'SkrewDriver'])
-    output = ReTesT.perform_VID_analysis(270,350,vid)
+    output = ReTesT.perform_VID_analysis(450,520,vid)
+    print ('All data is in ouput')
+    video_saving('~/MIT_Vedio/{}.mp4'.format(arg['output']),8.0,output)
+    print ('Finish Saving')
 '''
 @ MAC OS
 model_1 = HaarCV_Recognizor()

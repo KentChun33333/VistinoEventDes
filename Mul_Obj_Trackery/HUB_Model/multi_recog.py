@@ -10,14 +10,13 @@ from sklearn.externals import joblib
 from common_tool_agent.common_func import auto_resized
 import numpy as np
 import cv2
+from HUB_Model import *
+
 
 class CallBack(object):
     def __init__(self):
         self.staticmodel = StaticModel()
 
-class StaticModel(object):
-    def __init__(self):
-        pass
 
 class HaarCV_Recognizor(StaticModel):
     def __init__(self, xmlPath='model_hub/opencv_cascade/Rhand_no_tools/cascade.xml'):
@@ -66,7 +65,7 @@ class PureScrewDriverRecog(StaticModel):
         '''Ex: conf = Conf('/Users/kentchiu/VistinoEventDes/2016_MIT/Auto_HOG_SVM/conf_hub/conf_pureScrewDriver_2.json')'''
         self.conf = conf
 
-    def detect(self, rawImg, pro=0.7, scale=1.3):
+    def detect(self, rawImg, pro=0.8, scale=1.3):
         hog = HOG(orientations=self.conf["orientations"], pixelsPerCell=tuple(self.conf["pixels_per_cell"]),
         cellsPerBlock=tuple(self.conf["cells_per_block"]), normalize=self.conf["normalize"])
         # initialize the object detector

@@ -25,15 +25,16 @@ UP         = 8
 UPRIGHT    = 9
 
 
-def interpreter(coord1, coord2):
+def interpreter(coord1, coord2, noiseDistance=20):
     # Return the integer of one of the 8 directions this line is going in.
     # coord1 and coord2 are (x, y) integers coordinates.
+
     x1, y1 = coord1
     x2, y2 = coord2
     distance_of_vect = sqrt((x1-x2)**2+(y1-y2)**2)
     if x1 == x2 and y1 == y2:
         return STATIC  # two coordinates are the same.
-    elif  distance_of_vect < 5:
+    elif  distance_of_vect < noiseDistance:
     # [*] the magnitude is too small
     	return STATIC
     elif x1 == x2 and y1 > y2:

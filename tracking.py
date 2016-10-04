@@ -14,6 +14,7 @@ import dlib
 import argparse
 import imageio
 import time
+import gc
 
 class ObjectTrack(object):
     def __init__(self, ):
@@ -36,6 +37,7 @@ def to_int(*args):
         result.append(int(i))
     return result
 
+
 vid = imageio.get_reader('/Users/kentchiu/MIT_Vedio/'
     '2016-01-21/10.167.10.158_01_20160121082638418_1.mp4')
 
@@ -50,7 +52,12 @@ tracker.start_track(img, dlib.rectangle(580, 290, 700, 450))
 
 
 win = dlib.image_window()
-for i in range(1,500):
+for i in range(1,30):
+    # Failure Reproduce Success 
+    # Reinit the tracker would cause the threading problem
+    if i %10==0:
+        tracker = dlib.correlation_tracker()
+        tracker.start_track(img, dlib.rectangle(580, 290, 700, 450))
     img = vid.get_data(i)
     tracker.update(img)
     #tracker.get_position()
@@ -60,7 +67,8 @@ for i in range(1,500):
     win.clear_overlay()
     win.set_image(img)
     win.add_overlay(tracker.get_position())
-    dlib.hit_enter_to_continue()
+    gc.collect()
+    #dlib.hit_enter_to_continue()
     time.sleep(0.005)
 
 
