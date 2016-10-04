@@ -18,9 +18,10 @@ from HUB_dictionary.gesture_dictionary import Gesture_DTW_Dictionary
 from HUB_Model.multi_recog import HaarCV_Recognizor, PureScrewDriverRecog
 from HUB_Model import StaticModel , Tracker
 from com_func.conf import Conf
-from com_func.video_io import video_saving
+from com_func.video_io import video_saving_IO,video_saving_CV
 import dlib
 import gc
+import logging
 
 
 class Recog2Track():
@@ -38,6 +39,8 @@ class Recog2Track():
         # this is the motion- number representation with out any cut, trim,
         # this variable is used to output the training data or ...etc
         self.motionALL = [] # OutPutModel...
+        # Tricky adding Variables, looks redundant at first glence
+
 
         # max likelihood for the most possible motion
         self.motionLikehoodSeq = []
@@ -45,7 +48,7 @@ class Recog2Track():
         # this variable is contain the ref_img that for fast match
         self.refImgforMatch = []
 
-        # 
+        #
         self.tracker = []
 
         # this variable is contrain the Flag of state
@@ -103,33 +106,44 @@ class Recog2Track():
         tarBox = (startX, startY, endX, endY)
         return newImg, tarBox
 
+    def seq_clip(self, inPut,seqLen):
+        if len(inPut)<seqLen:
+            return inPut
+        return inPut[-seqLen:]
 
-    def motion_feature_extraction(self, imgAFrecog ,pointsSet,modelID):
+    def motion_feature_extraction(self, imgAFrecog ,pointsSet,modelID, tarBox_w_h):
         '''
         imgAFrecog : the raw img after static recognition
         pointsSet  : the location of the objects
         modelID    : the name that we predifined when iniciation the class
         '''
+        w,h = tarBox_w_h
+
         motionDictionary = Motion_Dictionary()
         PathDictionary = Path_DTW_Dictionary()
         if len(pointsSet)>3 :
             last_point = pointsSet[-2]
 
-            # Set the min Distance of object to see as Stationary   
-            min_noiseDistance = int(0.01*len(imgAFrecog))
+            # ==========================================================
+            # this noiseDistance Should be the associated to the tarBox
+            # Set the min Distance of object to see as Stationary
+            effectLength=(w**2+h**2)**(.5)
+            min_noiseDistance = int(0.3*effectLength)
 
             # interpreter the mostlikly motion
             tmp_motion = motion_interpretation.interpreter(last_point,pointsSet[-1], min_noiseDistance)
-            
+
             self.motionALL[modelID].append(tmp_motion) # this is all motion
 
-            if len(self.motionALL[modelID])>10:
-                motionLikehood = statics_mode(self.motionALL[modelID][-10:])[0]
-            else :
-                motionLikehood = statics_mode(self.motionALL[modelID])[0]
 
+            #=============================================================
+            # motion likelihood
+            # (likelihood is only useful if hand-gesture recognition)
+            # if using likelihood, should not see as static
+
+            motionLikehood = statics_mode(self.motionSeq[modelID])[0]
             self.motionLikehoodSeq[modelID].append(motionLikehood)
-            motionStr      = motionDictionary.check(motionLikehood)
+            motionStr = motionDictionary.check(self.motionALL[modelID][-10:])
             # %.2f = float with 2 dicimal
             modelName = self.modelNameList[modelID]
             cv2.putText(imgAFrecog,
@@ -163,7 +177,12 @@ class Recog2Track():
             return imgInput[tarBox[1]:tarBox[3],tarBox[0]:tarBox[2]]
 
 
-    def perform_VID_analysis(self, startFrame, endFrame, vid):
+    def perform_VID_analysis(self,
+                             startFrame,
+                             endFrame,
+                             vid,
+                             frameInterval=1,
+                             rollback=35):
         '''vidObj based on the image io OBJ'''
         self.numFrames = startFrame
         imgSeq = []
@@ -177,7 +196,7 @@ class Recog2Track():
 
             for modelID, model in enumerate(self.recogModels):
 
-                # add the criteria of Flag 
+                # add the criteria of Flag
                 if self.trackingFlag[modelID]==0:
                     NewImg, tarBox = model.detect(NewImg)
                     print 'recognitions mode' # Info Lel
@@ -189,65 +208,69 @@ class Recog2Track():
 
                         #===============================
                         # init the tracking model
-                        # output the refImg by objects 
+                        # output the refImg by objects
 
-                        # tarBox enlargement 
+                        # tarBox enlargement
                         w = tarBox[2]-tarBox[0]
                         h = tarBox[3]-tarBox[1]
                         tarBox[0] = tarBox[0]-int(w/10.0)
                         tarBox[1] = tarBox[1]-int(h/10.0)
                         tarBox[2] = tarBox[2]+int(w/10.0)
                         tarBox[3] = tarBox[3]+int(h/10.0)
-                        
+
                         self.tracker[modelID].start_track(NewImg, tarBox)
                         #self.refImgforMatch[modelID] = self.have_refimg(NewImg,tarBox,3)
 
-                        # if detected, than change the Flag 
+                        # if detected, than change the Flag
                         self.trackingFlag[modelID]=1
-                        
+                        NewImg = self.motion_feature_extraction(NewImg,self.position[modelID], modelID, (w,h))
 
                     else: # if cant not recog => break
                         if len(self.position[modelID])>0:
-                            self.position[modelID].append(self.position[modelID][-1])
-                            
-                    NewImg = self.motion_feature_extraction(NewImg,self.position[modelID], modelID)
+                            pass
+                            #self.position[modelID].append(self.position[modelID][-1])
+
 
 
                 elif self.trackingFlag[modelID]==1:
                     # Tracking level
-
                     # =============================
-                    # Attention Match Method Below 
+                    # Attention Match Method Below
                     # NewImg, tarBox = self.template_match(NewImg, self.refImgforMatch[modelID] )
-                    
+
                     # ==========================
-                    # correlated_tracker Method 
+                    # correlated_tracker Method
 
                     self.tracker[modelID].update(NewImg)
                     tarBox = self.tracker[modelID].get_position()
                     top_left = (tarBox[0],tarBox[1])
                     bottom_right = (tarBox[2],tarBox[3])
 
-                    cv2.rectangle(NewImg, top_left, bottom_right, (255,50*modelID,50*modelID), 2)
-                    
+                    cv2.rectangle(NewImg, top_left, bottom_right,
+                                  (255,50*modelID,50*modelID), 2)
+
                     print ('tracking_mode')
                     print 'Processing : ( Model : {}, Frame : {} )'.format(modelID, self.numFrames)
 
+                    #========================================================
+                    # Rollb back Method
                     # if keeping stationary rollback to Ananlyze again
-                    if len(self.motionALL[modelID])>15 :
-                        if self.motionALL[modelID][-15]==5:
+                    # Setting the roll back frame-length could be tricky
+                    #
+                    if len(self.motionLikehoodSeq[modelID])>rollback :
+                        if self.motionLikehoodSeq[modelID][-rollback:]==[5]*rollback:
                             self.trackingFlag[modelID]=0
 
                             #===========
                             # Roll Back
-                            self.numFrames-=10
-                            self.motionALL[modelID]=self.motionALL[:-9]
+                            rbFrame = int(rollback/3)
+                            self.numFrames-=rbFrame*frameInterval
+                            self.motionALL[modelID]=self.motionALL[:-rbFrame]
                             # append 0 for breaking the recog loop
-                            self.motionALL[modelID].append(0)
 
-                            imgSeq=imgSeq[:-9]
-                            self.position[modelID]=self.position[modelID][:-9]
-                            self.motionLikehoodSeq[modelID]=self.motionLikehoodSeq[modelID][:-9]
+                            imgSeq=imgSeq[:-rbFrame]
+                            self.position[modelID]=self.position[modelID][:-rbFrame]
+                            self.motionLikehoodSeq[modelID]=self.motionLikehoodSeq[modelID][:-rbFrame]
 
                             # re-init the tracker
                             self.tracker[modelID] = Tracker()
@@ -256,6 +279,9 @@ class Recog2Track():
                     elif len(tarBox)>0: # obj been detected
                         assert len(tarBox)==4
                         position = ((tarBox[0]+tarBox[2])/2, (tarBox[0]+tarBox[2])/2)
+
+                        w = tarBox[2]-tarBox[0]
+                        h = tarBox[3]-tarBox[1]
                         self.position[modelID].append(position)
 
                         # output the refImg by objects #
@@ -264,17 +290,21 @@ class Recog2Track():
                         # if detected, than change the Flag #
                         self.trackingFlag[modelID]=1
 
+                        NewImg = self.motion_feature_extraction(NewImg,self.position[modelID], modelID,(w,h))
+
+                    # =========================================================
+                    # if it is the template match it would happen non-detected
                     else: # Treat as Stationary
                         if len(self.position[modelID])>0:
                             self.position[modelID].append(self.position[modelID][-1])
-                        
-                        # if detected, than change the Flag 
+
+                        # if detected, than change the Flag
                         self.trackingFlag[modelID]=0
+                        NewImg = self.motion_feature_extraction(NewImg,self.position[modelID], modelID)
 
-                    # motion extraction
-                    NewImg = self.motion_feature_extraction(NewImg,self.position[modelID], modelID)
 
-                self.numFrames+=1
+
+                self.numFrames+=frameInterval
                 imgSeq.append(NewImg)
                 gc.collect()
         return imgSeq
@@ -349,7 +379,7 @@ def template_match_center_point(refImg, newImg, thresHold=0.88):
 def get_cli():
     parser = argparse.ArgumentParser()
     # Add the video path
-    parser.add_argument('-o','--output', required=True, 
+    parser.add_argument('-o','--output', required=True,
         help='output the vid_path')
     # Add the init bounding box position
     parser.add_argument('-i','--initBox',
@@ -363,20 +393,17 @@ if __name__=='__main__':
     assert len(arg['output'].split('.'))==1
     import imageio
     if os.name=='nt':
-        model_1 = HaarCV_Recognizor('C:/Users/kentc/Documents/Git'
-            'Hub/VistinoEventDes/2016_MIT/Auto_HOG'
-            '_SVM/model_hub/svm/PureScrewDriver_2.model')
-        model_2 = PureScrewDriverRecog(Conf('C:/Users/kentc/Documents/GitHub/'
-            'VistinoEventDes/2016_MIT/Auto_HOG_SVM/'
-            'conf_hub/conf_pureScrewDriver_2.json'))
+        model_1 = HaarCV_Recognizor()
+        model_2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))
+        vid=imageio.get_reader('D:/2016-01-21/10.167.10.158_01_20160121082638418_1.mp4')
     else:
         model_1 = HaarCV_Recognizor()
         model_2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))
         vid=imageio.get_reader('~/MIT_Vedio/2016-01-21/10.167.10.158_01_20160121082638418_1.mp4')
     ReTesT = Recog2Track([model_1,model_2],['Hand', 'SkrewDriver'])
-    output = ReTesT.perform_VID_analysis(450,520,vid)
+    output = ReTesT.perform_VID_analysis(100,620,vid)
     print ('All data is in ouput')
-    video_saving('~/MIT_Vedio/{}.mp4'.format(arg['output']),8.0,output)
+    video_saving_IO('{}.avi'.format(arg['output']),output)
     print ('Finish Saving')
 '''
 @ MAC OS

@@ -44,7 +44,7 @@ class Recog2Track():
         # this variable is contain the ref_img that for fast match
         self.refImgforMatch = []
 
-        # 
+        #
         self.tracker = Tracker()
 
         # this variable is contrain the Flag of state
@@ -122,7 +122,7 @@ class Recog2Track():
             self.motionALL[modelID].append(tmp_motion) # this is all motion
             self.motionSeq[modelID].append(tmp_motion) # this is time-segment motion
             # Compute the max_Likelihood
-            self.motionSeq[modelID]      = self.seq_clip(self.motionSeq[modelID],10)
+            self.motionSeq[modelID] = self.seq_clip(self.motionSeq[modelID],10)
             motionLikehood = statics_mode(self.motionSeq[modelID])[0]
             self.motionLikehoodSeq[modelID].append(motionLikehood)
             motionStr      = Dictionary.check(motionLikehood)

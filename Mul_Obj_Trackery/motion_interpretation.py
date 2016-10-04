@@ -35,7 +35,7 @@ def interpreter(coord1, coord2, noiseDistance=20):
     if x1 == x2 and y1 == y2:
         return STATIC  # two coordinates are the same.
     elif  distance_of_vect < noiseDistance:
-    # [*] the magnitude is too small
+        print (str(distance_of_vect), str(noiseDistance))
     	return STATIC
     elif x1 == x2 and y1 > y2:
         return UP

@@ -4,7 +4,7 @@ import numpy as np
 from scipy.spatial.distance import euclidean
 from fastdtw import fastdtw
 
-################################## 
+##################################
 # [*] Path Interpretation        #
 ##################################
 #   up-left     up    up-right   #
@@ -12,12 +12,12 @@ from fastdtw import fastdtw
 #     left 4    5    6:0 right   #
 #          1:11   2:10  3:13     #
 # down-left    down   down-right #
-################################## 
+##################################
 
 class Path_DTW_Dictionary():
 	def __init__(self):
 		self.pathDictionary ={}
-		# you could pre-difined some pattern there 
+		# you could pre-difined some pattern there
 
 		#self.pathDictionary['Slow Moving Down-Left'   ]  = [1,1,1,1,1,1,1,1]
 		#self.pathDictionary['Slow Moving Down'        ]  = [2,2,2,2,2,2,2,2]

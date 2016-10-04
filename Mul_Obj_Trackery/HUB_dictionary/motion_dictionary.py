@@ -1,4 +1,4 @@
-################################ 
+################################
 # [*] Motion Interpretation    #
 ################################
 #   up-left    up   up-right   #
@@ -6,7 +6,7 @@
 #     left 4   5   6 right     #
 #          1   2   3           #
 # down-left   down  down-right #
-################################ 
+################################
 
 
 class Motion_Dictionary():
@@ -32,8 +32,8 @@ class Motion_Dictionary():
 class Motion_3D_Dictionary():
 	def __init__(self):
 		self.motionDictionary ={}
-		
-		# Z = +1 
+
+		# Z = +1
 		self.motionDictionary['DOWNLEFT' ]  = 1
 		self.motionDictionary['DOWN'     ]  = 2
 		self.motionDictionary['DOWNRIGHT']  = 3
@@ -43,7 +43,7 @@ class Motion_3D_Dictionary():
 		self.motionDictionary['UPLEFT'   ]  = 7
 		self.motionDictionary['UP'       ]  = 8
 		self.motionDictionary['UPRIGHT'  ]  = 9
-		# Z = 0 
+		# Z = 0
 		self.motionDictionary['Moving Down-Left' ]  = 1+9
 		self.motionDictionary['Moving Down'      ]  = 2+9
 		self.motionDictionary['Moving Down-Right']  = 3+9
@@ -53,7 +53,7 @@ class Motion_3D_Dictionary():
 		self.motionDictionary['Moving Up-Left'   ]  = 7+9
 		self.motionDictionary['Moving Up'        ]  = 8+9
 		self.motionDictionary['Moving Up-Right'  ]  = 9+9
-		# Z = -1 
+		# Z = -1
 		self.motionDictionary['DOWNLEFT' ]  = 1+18
 		self.motionDictionary['DOWN'     ]  = 2+18
 		self.motionDictionary['DOWNRIGHT']  = 3+18
