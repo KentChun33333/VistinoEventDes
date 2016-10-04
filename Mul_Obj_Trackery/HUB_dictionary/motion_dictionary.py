@@ -23,7 +23,7 @@ class Motion_Dictionary():
 		self.motionDictionary['Moving Up'        ]  = 8
 		self.motionDictionary['Moving Up-Right'  ]  = 9
 
-	def check(self,value):
+	def search(self,value):
 		for a,b in self.motionDictionary.iteritems():
 			if b == int(value):
 				return a

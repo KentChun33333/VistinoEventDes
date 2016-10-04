@@ -127,8 +127,9 @@ class Recog2Track():
             # ==========================================================
             # this noiseDistance Should be the associated to the tarBox
             # Set the min Distance of object to see as Stationary
+            # minValue : 25 is relatived to the raw_Frame_Resolusionn
             effectLength=(w**2+h**2)**(.5)
-            min_noiseDistance = int(0.3*effectLength)
+            min_noiseDistance = min(int(0.07*effectLength),25)
 
             # interpreter the mostlikly motion
             tmp_motion = motion_interpretation.interpreter(last_point,pointsSet[-1], min_noiseDistance)
@@ -141,20 +142,22 @@ class Recog2Track():
             # (likelihood is only useful if hand-gesture recognition)
             # if using likelihood, should not see as static
 
-            motionLikehood = statics_mode(self.motionSeq[modelID])[0]
-            self.motionLikehoodSeq[modelID].append(motionLikehood)
-            motionStr = motionDictionary.check(self.motionALL[modelID][-10:])
+            #motionLikehood = statics_mode(self.motionSeq[modelID])[0]
+            #self.motionLikehoodSeq[modelID].append(motionLikehood)
+            motionStr = PathDictionary.search(self.motionALL[modelID][-10:])
             # %.2f = float with 2 dicimal
             modelName = self.modelNameList[modelID]
             cv2.putText(imgAFrecog,
                 "ID:%s, %s is %s" % (str(self.numFrames), modelName,motionStr),
-                 (20, 50*(1+modelID)), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 255, 255), 6)
+                 (20, 50*(1+modelID)),
+                 cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 255, 255), 6)
             if len(self.motionLikehoodSeq[modelID])>10 and (self.path_recognition is True):
+                pass
 
                 # =====================================
                 # put it in small LSTM or RNN for NPL
                 # put it into DTW search/match
-                PathRegStr_tmp = PathDictionary.search(self.motionLikehoodSeq[modelID][-7:])
+                #PathRegStr_tmp = PathDictionary.search(self.motionLikehoodSeq[modelID][-7:])
                 if PathRegStr_tmp == 'None':
                     pass
                 else:
@@ -182,7 +185,7 @@ class Recog2Track():
                              endFrame,
                              vid,
                              frameInterval=1,
-                             rollback=35):
+                             rollback=45):
         '''vidObj based on the image io OBJ'''
         self.numFrames = startFrame
         imgSeq = []
@@ -213,26 +216,26 @@ class Recog2Track():
                         # tarBox enlargement
                         w = tarBox[2]-tarBox[0]
                         h = tarBox[3]-tarBox[1]
-                        tarBox[0] = tarBox[0]-int(w/10.0)
-                        tarBox[1] = tarBox[1]-int(h/10.0)
-                        tarBox[2] = tarBox[2]+int(w/10.0)
-                        tarBox[3] = tarBox[3]+int(h/10.0)
+                        tarBox[0] = tarBox[0]-min(int(0.1*w),15)
+                        tarBox[1] = tarBox[1]-min(int(0.1*h),15)
+                        tarBox[2] = tarBox[2]+min(int(0.1*w),15)
+                        tarBox[3] = tarBox[3]+min(int(0.1*h),15)
 
                         self.tracker[modelID].start_track(NewImg, tarBox)
                         #self.refImgforMatch[modelID] = self.have_refimg(NewImg,tarBox,3)
 
                         # if detected, than change the Flag
                         self.trackingFlag[modelID]=1
-                        NewImg = self.motion_feature_extraction(NewImg,self.position[modelID], modelID, (w,h))
+                        NewImg = self.motion_feature_extraction(NewImg,
+                                    self.position[modelID], modelID, (w,h))
 
                     else: # if cant not recog => break
                         if len(self.position[modelID])>0:
                             pass
                             #self.position[modelID].append(self.position[modelID][-1])
 
-
-
                 elif self.trackingFlag[modelID]==1:
+                    # =============================
                     # Tracking level
                     # =============================
                     # Attention Match Method Below
@@ -252,31 +255,7 @@ class Recog2Track():
                     print ('tracking_mode')
                     print 'Processing : ( Model : {}, Frame : {} )'.format(modelID, self.numFrames)
 
-                    #========================================================
-                    # Rollb back Method
-                    # if keeping stationary rollback to Ananlyze again
-                    # Setting the roll back frame-length could be tricky
-                    #
-                    if len(self.motionLikehoodSeq[modelID])>rollback :
-                        if self.motionLikehoodSeq[modelID][-rollback:]==[5]*rollback:
-                            self.trackingFlag[modelID]=0
-
-                            #===========
-                            # Roll Back
-                            rbFrame = int(rollback/3)
-                            self.numFrames-=rbFrame*frameInterval
-                            self.motionALL[modelID]=self.motionALL[:-rbFrame]
-                            # append 0 for breaking the recog loop
-
-                            imgSeq=imgSeq[:-rbFrame]
-                            self.position[modelID]=self.position[modelID][:-rbFrame]
-                            self.motionLikehoodSeq[modelID]=self.motionLikehoodSeq[modelID][:-rbFrame]
-
-                            # re-init the tracker
-                            self.tracker[modelID] = Tracker()
-                            break
-
-                    elif len(tarBox)>0: # obj been detected
+                    if len(tarBox)>0: # obj been detected
                         assert len(tarBox)==4
                         position = ((tarBox[0]+tarBox[2])/2, (tarBox[0]+tarBox[2])/2)
 
@@ -302,7 +281,29 @@ class Recog2Track():
                         self.trackingFlag[modelID]=0
                         NewImg = self.motion_feature_extraction(NewImg,self.position[modelID], modelID)
 
+                    #========================================================
+                    # Rollb back Method
+                    # if keeping stationary rollback to Ananlyze again
+                    # Setting the roll back frame-length could be tricky
+                    #
+                    if len(self.motionALL[modelID])>rollback :
+                        if self.motionALL[modelID][-rollback:]==[5]*rollback:
+                            self.trackingFlag[modelID]=0
 
+                            #===========
+                            # Roll Back
+                            rbFrame = int(rollback/1.5)
+                            self.numFrames-=rbFrame*frameInterval
+                            self.motionALL[modelID]=self.motionALL[:-rbFrame]
+                            # append 0 for breaking the recog loop
+
+                            imgSeq=imgSeq[:-rbFrame]
+                            self.position[modelID]=self.position[modelID][:-rbFrame]
+                            self.motionLikehoodSeq[modelID]=self.motionLikehoodSeq[modelID][:-rbFrame]
+
+                            # re-init the tracker
+                            self.tracker[modelID] = Tracker()
+                            break
 
                 self.numFrames+=frameInterval
                 imgSeq.append(NewImg)
@@ -401,7 +402,8 @@ if __name__=='__main__':
         model_2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))
         vid=imageio.get_reader('~/MIT_Vedio/2016-01-21/10.167.10.158_01_20160121082638418_1.mp4')
     ReTesT = Recog2Track([model_1,model_2],['Hand', 'SkrewDriver'])
-    output = ReTesT.perform_VID_analysis(100,620,vid)
+    onlyHand = Recog2Track([model_1],['Hand'])
+    output = ReTesT.perform_VID_analysis(1,620,vid)
     print ('All data is in ouput')
     video_saving_IO('{}.avi'.format(arg['output']),output)
     print ('Finish Saving')
