@@ -72,13 +72,6 @@ class Recog2Track():
         self.recogModels = mulRecog
 
 
-    def tracking_mode(self,refImg, tarBox):
-        startX, startY, endX, endY = tarBox
-        tracker = dlib.correlation_tracker()
-        # A little larger init bounding box would be better : )
-        tracker.start_track(refImg, dlib.rectangle(startX, startY, endX, endY))
-        return newImg, tarBox
-
     def template_match(self, newImg,refImg , thresHold=0.85):
         '''
         res = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
@@ -105,11 +98,6 @@ class Recog2Track():
         endX, endY = bottom_right
         tarBox = (startX, startY, endX, endY)
         return newImg, tarBox
-
-    def seq_clip(self, inPut,seqLen):
-        if len(inPut)<seqLen:
-            return inPut
-        return inPut[-seqLen:]
 
     def motion_feature_extraction(self, imgAFrecog ,pointsSet,modelID, tarBox_w_h):
         '''
