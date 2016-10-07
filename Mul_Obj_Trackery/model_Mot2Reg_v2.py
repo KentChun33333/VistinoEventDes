@@ -1,11 +1,12 @@
-__Author__='Kent Chiu'
-__CreateDate__ = '2016-08-08'
 
+#==============================================================================
+# Author : Kent Chiu (kentchun33333@gmail.com)
+#==============================================================================
 # This Script is based on the previous version from Motion_Recognition
 # For realtime process, could ref it
 
 import numpy as np
-import os
+
 import argparse
 import imutils
 import cv2
@@ -175,6 +176,7 @@ class Recog2Track():
                              startFrame,
                              endFrame,
                              vid,
+                             width=1000,
                              frameInterval=1,
                              rollback=45):
         '''vidObj based on the image io OBJ'''
@@ -185,6 +187,7 @@ class Recog2Track():
             endFrame = vid.get_length()-1
         while self.numFrames <= endFrame:
             img = vid.get_data(self.numFrames)
+            img = imutils.resize(img, width=width)
             y, x, z = img.shape
             NewImg = img.copy()
 
@@ -373,17 +376,6 @@ def template_match_center_point(refImg, newImg, thresHold=0.88):
     cx = int(top_left[0]+0.5*w)
     cy = int(top_left[1]+0.5*h)
     return cx, cy
-
-def get_cli():
-    parser = argparse.ArgumentParser()
-    # Add the video path
-    parser.add_argument('-o','--output', required=True,
-        help='output the vid_path')
-    # Add the init bounding box position
-    parser.add_argument('-i','--initBox',
-        help='designation the location of the tracking object')
-    args = vars(parser.parse_args())
-    return args
 
 # =============================================================
 
@@ -671,10 +663,23 @@ class Recog2TrackIN():
         return imgSeq
 # ==============================================
 
+
+def get_cli():
+    parser = argparse.ArgumentParser()
+    # Add the video path
+    parser.add_argument('-o','--output', required=True,
+        help='output the vid_path')
+    # Add the init bounding box position
+    parser.add_argument('-i','--initBox',
+        help='designation the location of the tracking object')
+    args = vars(parser.parse_args())
+    return args
+
+
 if __name__=='__main__':
     arg = get_cli()
     assert len(arg['output'].split('.'))==1
-    import imageio
+    import imageio, os
     if os.name=='nt':
         model_1 = HaarCV_Recognizor()
         model_2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))
