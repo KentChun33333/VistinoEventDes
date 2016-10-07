@@ -348,9 +348,6 @@ class Recog2Track():
     def feature_describe(self):
         return self.motionLikehoodSeq
 
-class Dispach_Agent_Static_to_Dynamic():
-    def __init__():
-        pass
 
 def template_match_center_point(refImg, newImg, thresHold=0.88):
     '''
