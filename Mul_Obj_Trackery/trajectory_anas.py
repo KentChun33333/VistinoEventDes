@@ -1,44 +1,32 @@
 
+#=====================================================
+# This module is create to parse the motion of object
+#
+
 import multiprocess
 import logging
 import gc
 import unittest
 
-
-
-
-
 import motion_interpretation
-from HUB_dictionary.path_dictionary    import Path_DTW_Dictionary
+from HUB_dictionary.path_dictionary   import Path_DTW_Dictionary
 
 import common_func
-import gc
-# http://stackoverflow.com/questions/22440421/python-is-the-garbage-collector-run-before-a-memoryerror-is-raised
-# if there are hidden reference cycles
-# use gc.collect() to manually release the memory in each iteration
 
 
-def singleton(class_):
-  # when the decorator be excuted
-  # this variable would be encapsure in this decorater
-  instances = {}
-  def getinstance(*args, **kwargs):
-    if class_ not in instances:
-        instances[class_] = class_(*args, **kwargs)
-    return instances[class_]
-  return getinstance
+# Single Frame Analysis as node
 
 @singleton
 class VidMemo(object):
     def __init__(self):
-        self.boxes={}
-        self.prob ={}
+        self.boxes=[]
+        self.prob =[]
 
-    def addNode(self, labelID, box, prob):
+    def addNode(self, box, prob):
         '''lablerID could be label or objectName'''
         assert type(box)==tuple
-        self.boxes[labelID].append(box)
-        self.prob[labelID].append(prob)
+        self.boxes.append(box)
+        self.prob.append(prob)
 
     def extratResult(self,labelID):
         try :
@@ -63,7 +51,10 @@ class DTWAnalyzer2D(DynamicModel):
         '''
         objectSize = w, h
         '''
-        self.motinoALL.append(self.motInterpret(last_point,pointsSet[-1], min_noiseDistance))
+        if self.positionSeq<2:
+            return None
+
+        self.motionSeq.append(self.motInterpret(self.positionSeq[-2],self.positionSeq[-1], min_noiseDistance))
         if len(self.motionALL)<10:
             return 'Under Analysis'
         motionStr = self.model.search(self.motionALL[-10:])
@@ -72,9 +63,32 @@ class DTWAnalyzer2D(DynamicModel):
     def predict_proba(self, seqData, objSize):
         pass
 
+class VidAnalyzer(object):
+    def __init__(self):
+        pass
 
-__Author__='Kent Chiu'
-__CreateDate__ = '2016-08-08'
+if __name__=='__main__':
+    arg = get_cli()
+    assert len(arg['output'].split('.'))==1
+    import imageio
+    if os.name=='nt':
+        model_1 = HaarCV_Recognizor()
+        model_2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))
+        vid=imageio.get_reader('D:/2016-01-21/10.167.10.158_01_20160121082638418_1.mp4')
+    else:
+        model_1 = HaarCV_Recognizor()
+        model_2 = PureScrewDriverRecog(Conf('conf_hub/conf_pureScrewDriver_2.json'))
+        vid=imageio.get_reader('~/MIT_Vedio/2016-01-21/10.167.10.158_01_20160121082638418_1.mp4')
+    ReTesT = Recog2Track([model_1,model_2],['Hand', 'SkrewDriver'])
+    onlyHand = Recog2Track([model_1],['Hand'])
+    output = ReTesT.perform_VID_analysis(1,620,vid)
+    print ('All data is in ouput')
+    video_saving_IO('{}.avi'.format(arg['output']),output)
+    print ('Finish Saving')
+
+
+class ManualTrack2Mot():
+    def __init__():
 
 # This Script is based on the previous version from Motion_Recognition
 # For realtime process, could ref it
@@ -107,30 +121,21 @@ class Recog2Track():
         self.modelNameList = modelNameList
         self.modelNum = len(mulRecog)
         ##########################################
-
         # this is the collection that contains the obj center-point
         self.position = []
-
         # this is the motion- number representation with out any cut, trim,
         # this variable is used to output the training data or ...etc
         self.motionALL = [] # OutPutModel...
         # Tricky adding Variables, looks redundant at first glence
-
-
         # max likelihood for the most possible motion
         self.motionLikehoodSeq = []
-
         # this variable is contain the ref_img that for fast match
         self.refImgforMatch = []
-
         #
         self.tracker = []
-
         # this variable is contrain the Flag of state
         self.trackingFlag = []
-
         # According to how many obj , we init_corresponding variables
-        #
         for i in range(self.modelNum):
             # Below structure is [ [] ,  []]
             # or [ 1,0  ] for Flag
@@ -145,7 +150,6 @@ class Recog2Track():
         self.pathRegStr = "None"
         self.actionStr = "None"
         self.recogModels = mulRecog
-
 
     def template_match(self, newImg,refImg , thresHold=0.85):
         '''

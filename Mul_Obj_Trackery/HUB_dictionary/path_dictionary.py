@@ -23,15 +23,15 @@ class Path_DTW_Dictionary_InterActive():
 		self.pathDictionary ={}
 		# you could pre-difined some pattern there
 
-		self.pathDictionary['Slow Moving Down-Left'   ]  = [1]*8
-		self.pathDictionary['Slow Moving Down'        ]  = [2]*8
-		self.pathDictionary['Slow Moving Down-Right'  ]  = [3]*8
-		self.pathDictionary['Slow Moving Left'        ]  = [4]*8
+		self.pathDictionary['Moving Down-Left'   ]  = [1]*8
+		self.pathDictionary['Moving Down'        ]  = [2]*8
+		self.pathDictionary['Moving UP-Right'  ]  = [3]*8
+		self.pathDictionary['Moving Left'        ]  = [4]*8
 		self.pathDictionary['Keeping Stationary'      ]  = [5]*8
-		self.pathDictionary['Slow Moving Right'       ]  = [6]*8
-		self.pathDictionary['Slow Moving Up-Left'     ]  = [7]*8
-		self.pathDictionary['Slow Moving Up'          ]  = [8]*8
-		self.pathDictionary['Slow Moving Up-Right'    ]  = [9]*8
+		self.pathDictionary['Moving Right'       ]  = [6]*8
+		self.pathDictionary['Moving Up-Left'     ]  = [7]*8
+		self.pathDictionary['Moving Up'          ]  = [8]*8
+		self.pathDictionary['Moving Down-Right'    ]  = [9]*8
 
 #		self.pathDictionary['Clockwise Circle'        ]  = [8,15,6,13,10,11,4,14]
 #		self.pathDictionary['Clockwise Circle.'       ]  = [15,6,13,10,11,4,14,8]

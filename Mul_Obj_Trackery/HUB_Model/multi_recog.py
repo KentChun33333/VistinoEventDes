@@ -17,6 +17,15 @@ class CallBack(object):
     def __init__(self):
         self.staticmodel = StaticModel()
 
+class MaunallLable(StaticModel):
+    def __init__(self, tarBox):
+        assert len(tarBox)==4
+        self.tarBox = tarBox
+
+    def detect(self, img):
+        starX, starY, endX, endY = self.tarBox
+        cv2.rectangle(img,(starX,starY),(endX, endY), (255,0,0) ,2)
+        return img, self.tarBox
 
 class HaarCV_Recognizor(StaticModel):
     def __init__(self, xmlPath='model_hub/opencv_cascade/Rhand_no_tools/cascade.xml'):
@@ -39,7 +48,7 @@ class HaarCV_Recognizor(StaticModel):
                 pass
             else:
             # draw rectangle at the specific location
-                cv2.rectangle(ref,(x+50,y+50),(x+50+w,y+50+h),(255,0,0),2) 
+                cv2.rectangle(ref,(x+50,y+50),(x+50+w,y+50+h),(255,0,0),2)
                 cv2.putText(ref, "Hand", (x+50,y+50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 0, 0), 4)
                 hand_roi.append([x+50,y+50,x+50+w,y+50+h])
         if len(hand_roi)>1:
@@ -77,14 +86,14 @@ class PureScrewDriverRecog(StaticModel):
         roi = img_gray
         (boxes, probs) = od.detect(roi, winStep=self.conf["step_size"], winDim=self.conf["sliding_size"],
         pyramidScale=scale, minProb=pro)
-        # since for size effect with the camera, pyramidScale = 1.001, mnust>1, 
-        # if positive size would change, we have to use 1.5 or 2 ...etc 
+        # since for size effect with the camera, pyramidScale = 1.001, mnust>1,
+        # if positive size would change, we have to use 1.5 or 2 ...etc
         tarBox = non_max_suppression(np.array(boxes), probs, self.conf["overlap_thresh"])
-        orig = img.copy()    
+        orig = img.copy()
 
-        # Resize Back, I am GOD !!!!! 
+        # Resize Back, I am GOD !!!!!
         y_sizeFactor = ref.shape[0]/float(img.shape[0])
-        x_sizeFactor = ref.shape[1]/float(img.shape[1])    
+        x_sizeFactor = ref.shape[1]/float(img.shape[1])
 
         # loop over the allowed bounding boxes and draw them
         tarBoxSet=[]
@@ -93,9 +102,9 @@ class PureScrewDriverRecog(StaticModel):
             startX = int(startX* x_sizeFactor)
             endX   = int(endX  * x_sizeFactor)
             startY = int(startY* y_sizeFactor)
-            endY   = int(endY  * y_sizeFactor)    
+            endY   = int(endY  * y_sizeFactor)
             if startX < 300 or startY > 250 or startX > 400 or (endX -startX)>200:
-                continue    
+                continue
             cv2.rectangle(ref, (startX, startY), (endX, endY), (0, 255, 0), 2)
             cv2.putText(ref, "SkrewDriver", (startX, startY), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 255, 0), 4)
             #print (startX, startY), (endX, endY)
@@ -132,13 +141,13 @@ class SKin_Hand_Detection(StaticModel):
         faces = face_cascade.detectMultiScale(gray,
             scaleFactor=1.2,
             minNeighbors=10, #35 ==> 1
-            ) 
-        # Detect the face and remove it from hand detection 
+            )
+        # Detect the face and remove it from hand detection
         for (x,y,w,h) in faces:
             tarBox = (x,y,x+w, y+h)
             cv2.rectangle(frame,(tarBox[0],tarBox[1]),(tarBox[2],tarBox[3]),(10,10,10),-1)
         if self.Flag is True:
-        # Detect the face and remove it from hand detection with Other Model 
+        # Detect the face and remove it from hand detection with Other Model
             _, tarBox = model_1.detect(clone)
             if len(tarBox)==4:
                 cv2.rectangle(frame,(tarBox[0],tarBox[1]),(tarBox[2],tarBox[3]),(10,10,10),-1)
@@ -146,29 +155,29 @@ class SKin_Hand_Detection(StaticModel):
 
     def skin_thresh_contours(self,frame):
         '''
-        imput the frame, 
-        return thresh & contours 
+        imput the frame,
+        return thresh & contours
         '''
 
         # blut the image
-        blur = cv2.blur(frame,(3,3))    
-        
+        blur = cv2.blur(frame,(3,3))
+
         #Convert to HSV color space
         hsv = cv2.cvtColor(blur,cv2.COLOR_BGR2HSV)
-        
+
         #Create a binary image with where white will be skin colors and rest is black
         mask2 = cv2.inRange(hsv,np.array([2,50,50]),np.array([15,255,255]))
-        
-        #Kernel matrices for morphological transformation    
+
+        #Kernel matrices for morphological transformation
         kernel_square = np.ones((11,11),np.uint8)
         kernel_ellipse= cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(5,5))
-        
+
         #Perform morphological transformations to filter out the background noise
         #Dilation increase skin color area
         #Erosion increase skin color area
         dilation = cv2.dilate(mask2,kernel_ellipse,iterations = 1)
-        erosion = cv2.erode(dilation,kernel_square,iterations = 1)    
-        dilation2 = cv2.dilate(erosion,kernel_ellipse,iterations = 1)    
+        erosion = cv2.erode(dilation,kernel_square,iterations = 1)
+        dilation2 = cv2.dilate(erosion,kernel_ellipse,iterations = 1)
         filtered = cv2.medianBlur(dilation2,5)
         kernel_ellipse= cv2.getStructuringElement(cv2.MORPH_ELLIPSE,(8,8))
         dilation2 = cv2.dilate(filtered,kernel_ellipse,iterations = 1)
@@ -176,14 +185,14 @@ class SKin_Hand_Detection(StaticModel):
         dilation3 = cv2.dilate(filtered,kernel_ellipse,iterations = 1)
         median = cv2.medianBlur(dilation2,5)
         ret,thresh = cv2.threshold(median,127,255,0)
-        
-        #Find contours of the filtered frame    
 
-        #_, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)  
+        #Find contours of the filtered frame
+
+        #_, contours, hierarchy = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
         if int(cv2.__version__[0])==2:
             (contours, _) = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         else :
-            (_,contours, _) = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE) 
+            (_,contours, _) = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
         return thresh, contours
 
@@ -193,42 +202,42 @@ class SKin_Hand_Detection(StaticModel):
         return labeled img and bounding box as tarBox
         it could be used in the Recog2Track model
         '''
-        # Add Clone for Hand Detection Operation 
-        # The clone img is not draw by solid rectangle or ...etc 
-        clone = frame.copy()     
-        
-        # Remove the Face Skin Region 
+        # Add Clone for Hand Detection Operation
+        # The clone img is not draw by solid rectangle or ...etc
+        clone = frame.copy()
+
+        # Remove the Face Skin Region
         frame = self.face_Remove(frame)
         # cv2.imshow("Face Remove : Press ESC to EXIT", frame)
 
         # find the skin thresh image and its contours
         thresh, contours = self.skin_thresh_contours(frame)
 
-        
+
         #Find Max contour area (Assume that hand is in the frame)
         max_area=100
-        ci=0    
+        ci=0
         for i in range(len(contours)):
             cnt=contours[i]
             area = cv2.contourArea(cnt)
             if(area>max_area):
                 max_area=area
-                ci=i  
-                
+                ci=i
+
         #Largest area contour
         if len(contours)==0:
             tarBox = [] # if None return []
             return clone, tarBox
 
-        cnts = contours[ci]    
+        cnts = contours[ci]
 
         #Find convex hull
         hull = cv2.convexHull(cnts)
-        
+
         #Find convex defects
         hull2 = cv2.convexHull(cnts,returnPoints = False)
         defects = cv2.convexityDefects(cnts,hull2)
-        
+
         #Get defect points and draw them in the original image
         FarDefect = []
         for i in range(defects.shape[0]):
@@ -239,21 +248,21 @@ class SKin_Hand_Detection(StaticModel):
             FarDefect.append(far)
             cv2.line(clone,start,end,[0,255,0],1)
             cv2.circle(clone,far,10,[100,255,255],3)
-        
+
         #Find moments of the largest contour
         moments = cv2.moments(cnts)
-        
+
         #Central mass of first order moments
         if moments['m00']!=0:
             cx = int(moments['m10']/moments['m00']) # cx = M10/M00
             cy = int(moments['m01']/moments['m00']) # cy = M01/M00
-        centerMass=(cx,cy)    
-        
+        centerMass=(cx,cy)
+
         #Draw center mass
         cv2.circle(clone,centerMass,7,[100,0,255],2)
         font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(clone,'Center',tuple(centerMass),font,2,(255,255,255),2)     
-        
+        cv2.putText(clone,'Center',tuple(centerMass),font,2,(255,255,255),2)
+
         #Distance from each finger defect(finger webbing) to the center mass
         distanceBetweenDefectsToCenter = []
         for i in range(0,len(FarDefect)):
@@ -261,11 +270,11 @@ class SKin_Hand_Detection(StaticModel):
             centerMass = np.array(centerMass)
             distance = np.sqrt(np.power(x[0]-centerMass[0],2)+np.power(x[1]-centerMass[1],2))
             distanceBetweenDefectsToCenter.append(distance)
-        
+
         #Get an average of three shortest distances from finger webbing to center mass
         sortedDefectsDistances = sorted(distanceBetweenDefectsToCenter)
         AverageDefectDistance = np.mean(sortedDefectsDistances[0:2])
-     
+
         #Get fingertip points from contour hull
         #If points are in proximity of 80 pixels, consider as a single point in the group
         finger = []
@@ -273,17 +282,17 @@ class SKin_Hand_Detection(StaticModel):
             if (np.absolute(hull[i][0][0] - hull[i+1][0][0]) > 80) or ( np.absolute(hull[i][0][1] - hull[i+1][0][1]) > 80):
                 if hull[i][0][1] <500 :
                     finger.append(hull[i][0])
-        
-        #The fingertip points are 5 hull points with largest y coordinates  
-        finger =  sorted(finger,key=lambda x: x[1])   
+
+        #The fingertip points are 5 hull points with largest y coordinates
+        finger =  sorted(finger,key=lambda x: x[1])
         fingers = finger[0:5]
-        
+
         #Calculate distance of each finger tip to the center mass
         fingerDistance = []
         for i in range(0,len(fingers)):
             distance = np.sqrt(np.power(fingers[i][0]-centerMass[0],2)+np.power(fingers[i][1]-centerMass[0],2))
             fingerDistance.append(distance)
-        
+
         #Finger is pointed/raised if the distance of between fingertip to the center mass is larger
         #than the distance of average finger webbing to center mass by 130 pixels
         result = 0
@@ -291,11 +300,11 @@ class SKin_Hand_Detection(StaticModel):
             if fingerDistance[i] > AverageDefectDistance+130:
                 result = result +1
 
-        
+
         # Print bounding rectangle
         x,y,w,h = cv2.boundingRect(cnts)
         img = cv2.rectangle(clone,(x,y),(x+w,y+h),(0,255,0),2)
-        
+
         cv2.drawContours(clone,[hull],-1,(255,255,255),2)
         # bounding box recontruction in order to fit into the Recog2Track()
         tarBox = (cx-10, cy-10, cx+10, cy+10)

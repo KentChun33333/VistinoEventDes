@@ -28,20 +28,6 @@ def dep_video_saving(fileName, fps, imgSequence):
     cv2.destroyAllWindows()
 
 
-def saveVideo_IO(vid, fileName, StartFrameID, EndFrameID, Label_ID=True):
-    assert(fileName.split('.')[-1]=='avi')
-    writer = imageio.get_writer(fileName)
-    bar = Bar('Processing', max=(EndFrameID - StartFrameID))
-    for i in range(StartFrameID, EndFrameID):
-        img = vid.get_data(i)
-        if Label_ID:
-            cv2.rectangle(img,(0,0),(350,75),(0,0,0),-1)
-            cv2.putText(img, 'FrameId({})'.format(str(i)), (50,50), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 255, 255), 4)
-        writer.append_data(img) # Write out frame to video
-        bar.next()
-    bar.finish()
-    writer.close()
-    print ('[*] Finish Saving {} at {}'.format(fileName, os.getcwd()))
 
 def saveVideo_IO(ImageSeq, fileName, Label_ID=True):
     assert(fileName.split('.')[-1]=='avi')

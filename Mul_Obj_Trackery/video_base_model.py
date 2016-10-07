@@ -1,18 +1,14 @@
 
-
-def singleton(class_):
-  # when the decorator be excuted
-  # this variable would be encapsure in this decorater
-  instances = {}
-  def getinstance(*args, **kwargs):
-    if class_ not in instances:
-        instances[class_] = class_(*args, **kwargs)
-    return instances[class_]
-  return getinstance
-
-class ProcessStrategy(Topography):
-    def __init__(object, graph):
-
+#=====================================================
+# This Module provide basic concepts and structure
+# - Single Model as an process node
+# - Structured Analytic Strategies as directed graph
+# -
+#
+# The Model could be
+# - Static Model (Single Frame)
+# - Dynamical Model ( Time-series sequential Frames)
+#
 
 class Model(object):
     def isModel(self):
@@ -21,6 +17,7 @@ class Model(object):
 class Node(object):
     def isNode(self):
         pass
+
 
 class DynamicModel(Model):
     def __init__(self):
@@ -38,6 +35,33 @@ class StaticModel(Model):
 
     def predict_proba(self):
         pass
+
+class StrategyNetwork(object):
+    def __init__(self):
+        pass
+    def connect(self):
+        pass
+
+
+
+
+
+
+def singleton(class_):
+  # when the decorator be excuted
+  # this variable would be encapsure in this decorater
+  instances = {}
+  def getinstance(*args, **kwargs):
+    if class_ not in instances:
+        instances[class_] = class_(*args, **kwargs)
+    return instances[class_]
+  return getinstance
+
+class ProcessStrategy(Topography):
+    def __init__(object, graph):
+        pass
+
+
 
 class Topography(object):
     def isTopography(self):
