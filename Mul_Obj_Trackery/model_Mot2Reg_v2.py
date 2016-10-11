@@ -32,7 +32,6 @@ class Recog2Track():
         self.numFrames = 0
         self.modelNameList = modelNameList
         self.modelNum = len(mulRecog)
-        ##########################################
 
         # this is the collection that contains the obj center-point
         self.position = []
@@ -40,8 +39,6 @@ class Recog2Track():
         # this is the motion- number representation with out any cut, trim,
         # this variable is used to output the training data or ...etc
         self.motionALL = [] # OutPutModel...
-        # Tricky adding Variables, looks redundant at first glence
-
 
         # max likelihood for the most possible motion
         self.motionLikehoodSeq = []

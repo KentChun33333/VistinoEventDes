@@ -3,6 +3,7 @@ import cv2, os, imageio
 from progress.bar import Bar
 from skimage.io import imread, imshow
 import time
+
 def video_saving(fileName, fps, imgSequence):
     height, width, channels = imgSequence[0].shape
     # Define the codec and create VideoWriter object
