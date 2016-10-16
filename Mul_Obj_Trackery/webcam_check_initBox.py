@@ -30,6 +30,9 @@ def to_int(*args):
         result.append(int(i))
     return result
 
+# ======================================================
+# Define
+
 parser = argparse.ArgumentParser()
 # Add the video path
 parser.add_argument('-i', '--input', required=True)
