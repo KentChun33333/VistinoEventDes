@@ -22,7 +22,8 @@
 # -----------------------------------------------------------------------------
 # Usage Example
 # -----------------------------------------------------------------------------
-#
+# python vatic_data_parser.py -f id2/example_off_withSave4.txt
+#        -v id2/output.avi -o test_id2
 #
 #==============================================================================
 
@@ -30,7 +31,7 @@ import argparse
 import cv2
 import imageio
 import pandas as pd
-from skimage.io import imsave, imshow
+from skimage.io import imsave
 import os
 
 #==============================================================================
@@ -40,8 +41,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-f','--file', help='the labeled file path')
 parser.add_argument('-v','--vidPath', help='corresponding video path')
 parser.add_argument('-o','--output', help='output folder')
-parser.add_argument('-m','--mode', help='mode handler', type=str, nargs='+')
-arg = var(parser.parse_args())
+arg = vars(parser.parse_args())
 
 #==============================================================================
 # make sure output folder is not existed
@@ -51,7 +51,6 @@ try:
 except:
     print ('the output folder is existed')
 os.makedirs(arg['output'])
-
 
 #==============================================================================
 # Get the video & labeled data
@@ -63,7 +62,6 @@ with open(arg['file'],'r') as f :
 
 data2 = [i.split(' ') for i in data]
 
-
 col = ['track_id','xmin','ymin','xmax','ymax',
        'frameid','lost','occluded','generated','label_name']
 
@@ -72,37 +70,46 @@ df = pd.DataFrame(data2,columns=col )
 #==============================================================================
 # Hard Mining
 
-def gen_hard_mining(vid, df)
-    for frameID in range(vid.max_length):
+def gen_hard_mining(vid, df):
+    for frameID in range(vid.get_length()):
         frame = vid.get_data(frameID)
         # get the meta data
         df_tmp = df[ df['frameid']==str(frameID) ]
         df_tmp = df_tmp[['xmin','ymin','xmax','ymax']]
         for i_list in df_tmp.values:
-            startX, startY, endX, endY = i_list[0]
-            cv2.rectangle(frame, (startX,startY), (endX,endY), (0,0,0), -1)
+            startX, startY, endX, endY = map(int,i_list)
+            cv2.rectangle(frame, (startX,startY), (endX,endY),
+                          (255,255,255), -1)
         yield frame
 
 #==============================================================================
-# Hard Mining
+# Positive Mining
 
 def positive_img(vid, df, label):
-    for frameID in range(vid.max_length):
+    for frameID in range(vid.get_length()):
         frame = vid.get_data(frameID)
         # get the meta data
         df_tmp = df[ df['frameid']==str(frameID) ]
         df_tmp = df_tmp[ df_tmp['label_name']==label ]
         df_tmp = df_tmp[['xmin','ymin','xmax','ymax']]
         for i_list in df_tmp.values:
-            startX, startY, endX, endY = i_list[0]
-            img = frame[startX:endX, startY:endY,:]
+            startX, startY, endX, endY = map(int,i_list)
+            img = frame[startY:endY, startX:endX,:]
         yield img
 
 if __name__ == '__main__':
     for _, img in enumerate(gen_hard_mining(vid, df)):
-        imsave(arg['output']+'\\BG\\'+str(_)+'.png')
+        tarFolder = arg['output']+'\\BG\\'
+        if not os.path.isdir(tarFolder):
+            os.makedirs(tarFolder)
+        imsave(tarFolder+str(_)+'.png',img)
+
     labels = list(set(df['label_name']))
     for label in labels:
         for _, img in enumerate(positive_img(vid, df, label)):
             label_folder = label.replace('"',"").split('\n')[0]
-            imsave(arg['output']+'\\{}\\'.format(label_folder)+str(_)+'.png')
+            tarFolder = arg['output']+'\\{}\\'.format(label_folder)
+
+            if not os.path.isdir(tarFolder):
+                os.makedirs(tarFolder)
+            imsave(tarFolder+str(_)+'.png', img)
