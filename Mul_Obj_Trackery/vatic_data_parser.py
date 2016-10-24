@@ -27,12 +27,9 @@
 #
 #==============================================================================
 
-import argparse
-import cv2
-import imageio
+import argparse, cv2, imageio, os
 import pandas as pd
 from skimage.io import imsave
-import os
 
 #==============================================================================
 # Get the command-line variables
@@ -44,33 +41,18 @@ parser.add_argument('-o','--output', help='output folder')
 arg = vars(parser.parse_args())
 
 #==============================================================================
-# make sure output folder is not existed
+# 3 main functions
 
-try:
-    assert os.path.isdir(arg['output'])==False
-except:
-    print ('the output folder is existed')
-os.makedirs(arg['output'])
+def get_vatic_data(fileName):
+    with open(fileName,'r') as f :
+        data = f.readlines()
+    data2 = [i.split(' ') for i in data]
+    col = ['track_id','xmin','ymin','xmax','ymax',
+           'frameid','lost','occluded','generated','label_name']
+    df = pd.DataFrame(data2,columns=col )
+    return df
 
-#==============================================================================
-# Get the video & labeled data
-
-vid = imageio.get_reader(arg['vidPath'])
-
-with open(arg['file'],'r') as f :
-    data = f.readlines()
-
-data2 = [i.split(' ') for i in data]
-
-col = ['track_id','xmin','ymin','xmax','ymax',
-       'frameid','lost','occluded','generated','label_name']
-
-df = pd.DataFrame(data2,columns=col )
-
-#==============================================================================
-# Hard Mining
-
-def gen_hard_mining(vid, df):
+def gen_bg(vid, df):
     for frameID in range(vid.get_length()):
         frame = vid.get_data(frameID)
         # get the meta data
@@ -82,10 +64,7 @@ def gen_hard_mining(vid, df):
                           (255,255,255), -1)
         yield frame
 
-#==============================================================================
-# Positive Mining
-
-def positive_img(vid, df, label):
+def gen_pos(vid, df, label):
     for frameID in range(vid.get_length()):
         frame = vid.get_data(frameID)
         # get the meta data
@@ -97,8 +76,24 @@ def positive_img(vid, df, label):
             img = frame[startY:endY, startX:endX,:]
         yield img
 
+#==============================================================================
+
 if __name__ == '__main__':
-    for _, img in enumerate(gen_hard_mining(vid, df)):
+    # make sure output folder is not existed
+    try:
+        assert os.path.isdir(arg['output'])==False
+    except:
+        print ('the output folder is existed')
+    os.makedirs(arg['output'])
+
+    # Get vid
+    vid = imageio.get_reader(arg['vidPath'])
+
+    # Get df from vatic
+    df = get_vatic_data(arg['file'])
+
+    # imsave bg
+    for _, img in enumerate(gen_bg(vid, df)):
         tarFolder = arg['output']+'\\BG\\'
         if not os.path.isdir(tarFolder):
             os.makedirs(tarFolder)
@@ -106,7 +101,7 @@ if __name__ == '__main__':
 
     labels = list(set(df['label_name']))
     for label in labels:
-        for _, img in enumerate(positive_img(vid, df, label)):
+        for _, img in enumerate(gen_pos(vid, df, label)):
             label_folder = label.replace('"',"").split('\n')[0]
             tarFolder = arg['output']+'\\{}\\'.format(label_folder)
 
