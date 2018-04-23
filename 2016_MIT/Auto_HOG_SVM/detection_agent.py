@@ -29,7 +29,7 @@ def get_args():
     args = parser.parse_args()
     # Assign args to variables
     conf_path = args.conf_path
-    img_path = arrgs.img
+    img_path = args.img
     # Return all variable values
     return conf_path, img_path
 

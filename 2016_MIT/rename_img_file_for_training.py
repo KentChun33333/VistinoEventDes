@@ -16,7 +16,6 @@ import argparse
 
 def get_args():
     parser = argparse.ArgumentParser()
-
     parser.add_argument('-fn', '--folder_name', type=str,
         help='add the New Name for this set of images', required=True)
 

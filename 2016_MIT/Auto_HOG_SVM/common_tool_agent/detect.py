@@ -29,7 +29,7 @@ class ObjectDetector:
 					# not this window contains an object we are interested in
 					features = self.desc.describe(window)
 					features.reshape(-1, 1) # due to the depreciation
-					prob = self.model.predict_proba(features)[0][1]
+					prob = self.model.predict_proba(features)[0]#[1]
 
 					# check to see if the classifier has found an object with sufficient
 					# probability
